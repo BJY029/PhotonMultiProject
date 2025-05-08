@@ -66,7 +66,6 @@ public class DummyController : MonoBehaviour
 	// player
 	private float _speed;
 	private float _animationBlend;
-	private float _targetRotation = 0.0f;
 	private float _rotationVelocity;
 	private float _verticalVelocity;
 	private float _terminalVelocity = 53.0f;
@@ -107,12 +106,29 @@ public class DummyController : MonoBehaviour
 
 		MyState = DummyState.Idle;
 
+		//일정 시간 후 행동들을 실행할 수 있도록 코루틴 사용
+		StartCoroutine(WaitAndChangeStates());
+	}
+
+	IEnumerator WaitAndChangeStates()
+	{
+		//전반적인 모션 스피드 설정으로 1로 해놔서 애니메이션 모션 속도를 고정시킨다.
+		_animator.SetFloat(_animIDMotionSpeed, 1);
+		float timer = 2.0f ;
+		while (timer >= 0)
+		{
+			yield return null;
+			timer -= Time.deltaTime;
+		}
+
 		ChangeState();
 	}
 
 	private void Update()
 	{
+		//지속적으로 플레이어가 땅에 붙어있는지 확인
 		GroundCheck();
+		//지속적으로 중력 적용
 		PlayerGravity();
 	}
 
@@ -128,21 +144,26 @@ public class DummyController : MonoBehaviour
 	}
 
 
+	//Dummy의 상태를 변경시키는 함수
 	private void ChangeState()
 	{
+		//상태 변경까지의 주기를 랜덤하게 설정
+		RandomTimer = Random.Range(3.0f, 8.0f);
+		//실행하던 모든 코루틴 중지
 		StopAllCoroutines();
-
-		RandomTimer = Random.Range(3.0f, 10.0f);
+		//Dummy 상태를 변경하는 코루틴 호출
 		StartCoroutine(WaitAndChangeState());
 	}
 
 	IEnumerator WaitAndChangeState()
 	{
+		//내 상태들을 랜덤값을 부여해서 정의
 		MyState = states[Random.Range(0, states.Length)];
-		//MyState = DummyState.Walk;
+		//현재 내 상태를 디버깅 창에 표시
 		Debug.Log("Dummy State : " + MyState.ToString());
 
-		switch(MyState)
+		//상태에 따라서 각 case문 실행
+		switch (MyState)
 		{
 			case DummyState.Idle:
 				StartCoroutine(JustIdle());
@@ -160,14 +181,16 @@ public class DummyController : MonoBehaviour
 				break;
 		}
 
+		//상태 변경 후, Timer 시작
+		//해당 타이머 값은 각 행동 코루틴에서 while문의 조건으로 사용 됨
 		while (RandomTimer > 0)
 		{
-			yield return new WaitForEndOfFrame();
+			yield return null;
 			RandomTimer -= Time.deltaTime;
 		}
 	}
 
-
+	//바닥에 붙어있는지 확인
 	private void GroundCheck()
 	{
 		//지면 체크용 구체의 중심 좌표를 설정(현재 플레이어 기준, 지정한 오프셋만큼 아래에 위치)
@@ -189,40 +212,52 @@ public class DummyController : MonoBehaviour
 		}
 	}
 
+	//그냥 IDEL 애니메이션 재생하는 코루틴
 	IEnumerator JustIdle()
 	{
+		//설정된 타이머동안
 		while(MyState == DummyState.Idle && RandomTimer > 0)
 		{
+			//대기(Idle 애니메이션 재생)
 			yield return new WaitForEndOfFrame();
 		}
+		//상태 변경
 		ChangeState();
 	}
 
+	//이동 코루틴
 	IEnumerator Move()
 	{
+		//목표 속도를 설정
 		targetSpeed = MoveSpeed;
+		//설정된 타이머동안 반복 실행
 		while (MyState == DummyState.Walk && RandomTimer > 0)
 		{
+			//수평 속도 정의
 			float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
-
+			//일정 이하 속도가 줄면 그냥 멈추기 위한 오프셋 설정
 			float speedOffset = 0.1f;
-
+			//현재 수평 속도가 목표 속도와 차이가 많이 나면
 			if(currentHorizontalSpeed < targetSpeed - speedOffset)
 			{
+				//Lerp을 사용해서 점진적으로 속도 변경
 				_speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed, Time.deltaTime * SpeedChangeRate);
-
+				//round()로 속도를 0.001 단위로 정리해서 불필요한 미세 진동 제거
 				_speed = Mathf.Round(_speed * 1000f) / 1000f;
 			}
-			else 
+			else //속도 차이가 많이 안나면
 			{
+				//그냥 목표 속도로 속도 설정
 				_speed = targetSpeed;
 			}
 
-
+			//애니메이션 블렌드 값 계산, 애니메이션 속도를 부드럽게 전환하기 위한 보간 값
 			_animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
 
+			//전진 방향으로 설정
 			Vector3 moveDirection = transform.forward;
 
+			//controller를 사용해서 Dummy 이동시킴, 수직 운동도 수행함(어디 걸어서 내려갈 때 필요)
 			_controller.Move(moveDirection * (_speed * Time.deltaTime)+ new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
 
 			// 애니메이션 파라미터 업데이트
@@ -234,34 +269,42 @@ public class DummyController : MonoBehaviour
 
 			yield return null;
 		}
+		//타이머가 다 된 경우
 		targetSpeed = 0;
+		//자연스럽게 멈추기 위한 코루틴 재생
 		StartCoroutine(StopMove());
 	}
 
 	IEnumerator StopMove()
 	{
+		//목표 속도 0으로 설정
 		float targetSpeed = 0;
+		//속도가 0이 될 때 까지
 		while(_speed > 0)
 		{
+			//현재 수평 속도 계산
 			float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
 			float speedOffset = 0.1f;
-
+			//현재 속도와 목표 속도가 많이 차이 나면
 			if(currentHorizontalSpeed > targetSpeed + speedOffset)
 			{
+				//Lerp을 사용하여 점진적으로 속도 변경
 				_speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed, Time.deltaTime * SpeedChangeRate);
-
+				// round()로 속도를 0.001 단위로 정리해 불필요한 미세 진동 제거
 				_speed = Mathf.Round(_speed * 1000f) / 1000f;
 			}
 			else
 			{
+				//속도 차이가 많이 안나면 그냥 0으로 설정
 				_speed = targetSpeed;
 			}
-
+			//애니메이션 블렌드 값 계산, 애니메이션 속도를 부드럽게 전환하기 위한 보간 값
 			_animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
 			if (_animationBlend < 0.01f) _animationBlend = 0f;
 
+			//동일하게 전진 방향으로 설정
 			Vector3 moveDirection = transform.forward;
-
+			//전진 이동
 			_controller.Move(moveDirection * (_speed * Time.deltaTime));
 
 			// 애니메이션 파라미터 업데이트
@@ -273,38 +316,51 @@ public class DummyController : MonoBehaviour
 
 			yield return null;
 		}
+		
+		//완전히 멈추면 속도를 0으로 초기화 하고
+		_speed = 0;
+		//애니메이션 파라미터도 0으로 넘겨서 오류 방지
+		if (_hasAnimator)
+		{
+			_animator.SetFloat(_animIDSpeed, 0);
+		}
 
+		//상태 변경
 		ChangeState();
 	}
 
+	//점프 코루틴
 	IEnumerator Jump()
 	{
+		//점프 상태가 되면 수직 속도 계산
 		_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+
+		//점프 애니메이션 활성화
 		if(_hasAnimator)
 		{
 			_animator.SetBool(_animIDJump, true);
 		}
 
+		//타이머가 다 될때까지
 		while (RandomTimer > 0f)
 		{
-			// 중력 적용도 포함 (낙하)
-			if (!Grounded && _verticalVelocity < _terminalVelocity)
-			{
-				_verticalVelocity += Gravity * Time.deltaTime;
-			}
-
 			// 점프 중 캐릭터를 위로 이동
+			//_verticalVelocity는 PlayerGravity() 함수에서 자동적으로 중력 적용으로 인해 감소하게 된다.
+			//즉, 자연스러운 점프 연출 가능
 			Vector3 jumpMove = new Vector3(0f, _verticalVelocity, 0f) * Time.deltaTime;
 			_controller.Move(jumpMove);
 
 			yield return null;
 		}
 
+		//상태 변경
 		ChangeState();
 	}
 
+	//플레이어 중력 적용 함수
 	private void PlayerGravity()
 	{
+		//플레이어가 땅바닥에 붙어있는 경우
 		if (Grounded)
 		{
 			_fallTimeoutDelta = FallTimeout;
@@ -323,8 +379,9 @@ public class DummyController : MonoBehaviour
 				_verticalVelocity = -2f;
 			}
 		}
-		else
+		else //점프 중이면
 		{
+			//중력 속도 적용
 			if(_verticalVelocity < _terminalVelocity)
 			{
 				_verticalVelocity += Gravity * Time.deltaTime;
@@ -338,14 +395,20 @@ public class DummyController : MonoBehaviour
 		}
 	}
 
+	//회전 코루틴
 	IEnumerator Turn()
 	{
+		//회전 타이머 초기화
 		float turnTimer = _turnDuration;
 
+		//0~360도 사이 중 랜덤 회전값 부여(수정해야 할 듯)
 		float targetYaw = Random.Range(0f, 360f);
+		//시작 회전 값(현재 내 상태)
 		Quaternion startRotation = transform.rotation;
+		//목표 회전 값
 		Quaternion targetRotation = Quaternion.Euler(0f, targetYaw, 0f);
 
+		//회전 타이머만큼 Slerp으로 회전 처리
 		float timer = 0f;
 		while (timer < turnTimer)
 		{
@@ -353,6 +416,8 @@ public class DummyController : MonoBehaviour
 			transform.rotation = Quaternion.Slerp(startRotation, targetRotation, timer);
 			yield return null;
 		}
+
+		while (RandomTimer > 0f) yield return null;	
 		ChangeState();
 	}
 
