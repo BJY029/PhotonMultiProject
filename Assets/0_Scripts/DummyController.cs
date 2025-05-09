@@ -453,7 +453,6 @@ public class DummyController : MonoBehaviour
 		{
 			//착지음을 캐릭터 위치에서 재생
 			AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
-
 		}
 	}
 }
