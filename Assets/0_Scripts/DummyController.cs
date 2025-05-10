@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using UnityEngine;
 
@@ -9,8 +10,17 @@ enum DummyState
     Jump
 };
 
-public class DummyController : MonoBehaviour
+public class DummyController : MonoBehaviourPun
 {
+	public int DummyID => photonView.ViewID;
+	public static DummyController instance;
+
+	private void Awake()
+	{
+		if (instance == null)
+			instance = this;
+	}
+
 	//상태들을 리스트로 저장
 	DummyState[] states = { DummyState.Walk, DummyState.Turn, DummyState.Idle, DummyState.Jump };
 	//현재 상태 정의
@@ -90,6 +100,8 @@ public class DummyController : MonoBehaviour
 
 	private CharacterController _controller;
 
+	public float maxDistance = 10f;
+
 	private void Start()
 	{
 		//애니메이터 컴포넌트가 있으면 반환
@@ -106,9 +118,12 @@ public class DummyController : MonoBehaviour
 
 		MyState = DummyState.Idle;
 
+		
 		//일정 시간 후 행동들을 실행할 수 있도록 코루틴 사용
 		StartCoroutine(WaitAndChangeStates());
+		
 	}
+
 
 	IEnumerator WaitAndChangeStates()
 	{
@@ -121,7 +136,12 @@ public class DummyController : MonoBehaviour
 			timer -= Time.deltaTime;
 		}
 
-		ChangeState();
+		//MasterClient만 코루틴 실행
+		if (PhotonNetwork.IsMasterClient)
+		{
+			Debug.Log("나는 MasterClient 입니다.");
+			ChangeState();
+		}		
 	}
 
 	private void Update()
@@ -130,7 +150,25 @@ public class DummyController : MonoBehaviour
 		GroundCheck();
 		//지속적으로 중력 적용
 		PlayerGravity();
+
+		//Debug.DrawRay(transform.position, transform.forward * 10f, Color.red);
+
 	}
+
+	[PunRPC]
+	public void RPC_SyncState(int viewID, int CurrentState, float CurrentTimer,
+		float currentSpeed, float currentAnimBlend)
+	{
+		if (PhotonNetwork.IsMasterClient)
+		{
+			GameObject dummyObj = PhotonView.Find(viewID)?.gameObject;
+			MyState = (DummyState)CurrentState;
+			RandomTimer = CurrentTimer;
+			_speed = currentSpeed;
+			_animationBlend = currentAnimBlend;
+		}
+	}
+
 
 	//각 Animator 파라미터의 문자열 이름을 정수 해시값으로 변환하는 함수
 	//Update() 같은 반복 실행에서 효율적인 비교를 하기 위해 정수해시값으로 변환해서 사용
@@ -145,7 +183,7 @@ public class DummyController : MonoBehaviour
 
 
 	//Dummy의 상태를 변경시키는 함수
-	private void ChangeState()
+	public void ChangeState()
 	{
 		//상태 변경까지의 주기를 랜덤하게 설정
 		RandomTimer = Random.Range(3.0f, 8.0f);
@@ -157,11 +195,32 @@ public class DummyController : MonoBehaviour
 
 	IEnumerator WaitAndChangeState()
 	{
-		//내 상태들을 랜덤값을 부여해서 정의
-		MyState = states[Random.Range(0, states.Length)];
+		bool blocked = false;
+		Vector3 origin = transform.position;
+		Vector3 direction = transform.forward;
+
+		if (Physics.SphereCast(origin, 0.2f,direction, out RaycastHit hit, maxDistance))
+		{
+			Debug.Log("Distance from wall : " + hit.distance);
+			if (hit.distance < 1f)
+			{
+				blocked = true;
+				Debug.Log("Blocked!");
+				MyState = DummyState.Turn;
+			}
+			else
+			{
+				Debug.Log("Can go front");
+				MyState = ReturnRandomState();
+			}
+		}
+		else
+		{
+			Debug.Log("No collider");
+			MyState = ReturnRandomState();
+		}
 		//현재 내 상태를 디버깅 창에 표시
 		Debug.Log("Dummy State : " + MyState.ToString());
-
 		//상태에 따라서 각 case문 실행
 		switch (MyState)
 		{
@@ -175,7 +234,13 @@ public class DummyController : MonoBehaviour
 				StartCoroutine(Jump());
 				break;
 			case DummyState.Turn:
-				StartCoroutine(Turn());
+				if (blocked)
+				{
+					StartCoroutine(Turn(90f, 270f));
+					blocked = false;
+				}
+				else
+					StartCoroutine(Turn(-360f, 360f));
 				break;
 			default:
 				break;
@@ -188,6 +253,14 @@ public class DummyController : MonoBehaviour
 			yield return null;
 			RandomTimer -= Time.deltaTime;
 		}
+	}
+
+	private DummyState ReturnRandomState()
+	{
+		//내 상태들을 랜덤값을 부여해서 정의
+		MyState = states[Random.Range(0, states.Length)];
+
+		return MyState;
 	}
 
 	//바닥에 붙어있는지 확인
@@ -280,7 +353,7 @@ public class DummyController : MonoBehaviour
 		//목표 속도 0으로 설정
 		float targetSpeed = 0;
 		//속도가 0이 될 때 까지
-		while(_speed > 0)
+		while(_speed > 0.01f)
 		{
 			//현재 수평 속도 계산
 			float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
@@ -396,17 +469,17 @@ public class DummyController : MonoBehaviour
 	}
 
 	//회전 코루틴
-	IEnumerator Turn()
+	IEnumerator Turn(float minRange, float maxRange)
 	{
 		//회전 타이머 초기화
 		float turnTimer = _turnDuration;
 
 		//0~360도 사이 중 랜덤 회전값 부여(수정해야 할 듯)
-		float targetYaw = Random.Range(0f, 360f);
+		float targetYaw = Random.Range(minRange, maxRange);
 		//시작 회전 값(현재 내 상태)
 		Quaternion startRotation = transform.rotation;
 		//목표 회전 값
-		Quaternion targetRotation = Quaternion.Euler(0f, targetYaw, 0f);
+		Quaternion targetRotation = Quaternion.Euler(0f, transform.eulerAngles.y + targetYaw, 0f);
 
 		//회전 타이머만큼 Slerp으로 회전 처리
 		float timer = 0f;
