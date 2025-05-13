@@ -140,6 +140,14 @@ namespace StarterAssets
 
         private void Start()
         {
+            //현재 입장해서 생성된 플레이어가 master client이면
+            if (PhotonNetwork.IsMasterClient)
+            {
+                //Dummy를 생성한다.
+                DummySpawner.instance.LoadAndSpawnDummies();
+            }
+
+
             //애니메이터 컴포넌트가 있으면 반환
             _hasAnimator = TryGetComponent(out _animator);
             //CharacterController 객체 생성

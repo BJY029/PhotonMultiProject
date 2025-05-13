@@ -139,7 +139,7 @@ public class DummyController : MonoBehaviourPun
 		//MasterClient만 코루틴 실행
 		if (PhotonNetwork.IsMasterClient)
 		{
-			Debug.Log("나는 MasterClient 입니다.");
+			//Debug.Log("나는 MasterClient 입니다.");
 			ChangeState();
 		}		
 	}
@@ -201,26 +201,26 @@ public class DummyController : MonoBehaviourPun
 
 		if (Physics.SphereCast(origin, 0.2f,direction, out RaycastHit hit, maxDistance))
 		{
-			Debug.Log("Distance from wall : " + hit.distance);
+			//Debug.Log("Distance from wall : " + hit.distance);
 			if (hit.distance < 1f)
 			{
 				blocked = true;
-				Debug.Log("Blocked!");
+				//Debug.Log("Blocked!");
 				MyState = DummyState.Turn;
 			}
 			else
 			{
-				Debug.Log("Can go front");
+				//Debug.Log("Can go front");
 				MyState = ReturnRandomState();
 			}
 		}
 		else
 		{
-			Debug.Log("No collider");
+			//Debug.Log("No collider");
 			MyState = ReturnRandomState();
 		}
 		//현재 내 상태를 디버깅 창에 표시
-		Debug.Log("Dummy State : " + MyState.ToString());
+		//Debug.Log("Dummy State : " + MyState.ToString());
 		//상태에 따라서 각 case문 실행
 		switch (MyState)
 		{
