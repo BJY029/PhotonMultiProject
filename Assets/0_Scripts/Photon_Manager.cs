@@ -73,13 +73,16 @@ public class Photon_Manager : MonoBehaviourPunCallbacks
 		SpawnPlayer();
 	}
 
+	//MasterClient가 변경되면 호출되는 함수
 	public override void OnMasterClientSwitched(Player newMasterClient)
 	{
 		Debug.Log("MasterClient가 변경되었습니다.");
 
+		//MasterClient가 나라면
 		if (PhotonNetwork.IsMasterClient)
 		{
-			DummyController.instance.ChangeState();
+			//내 앱을 끈다.
+			Application.Quit();
 		}
 	}
 
