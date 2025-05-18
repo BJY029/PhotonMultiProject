@@ -839,7 +839,7 @@ GameObject:
   - component: {fileID: 8233989877316908872}
   m_Layer: 8
   m_Name: DummyKyle
-  m_TagString: Player
+  m_TagString: Dummy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

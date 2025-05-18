@@ -504,13 +504,17 @@ public class DummyController : MonoBehaviourPun
 		//따라서 0.5 이상이면 발소리를 재생한다.
 		if (animationEvent.animatorClipInfo.weight > 0.5f)
 		{
-			//발소리 클립이 등록되어 있을 때만 실행된다.
-			if (FootstepAudioClips.Length > 0)
+			//해당 Dummy가 플레이어 근처이 있는 경우(약 20) 소리 재생
+			if (PlayerSensor.Instance.IsDummyInRange(gameObject))
 			{
-				//발소리 클립이 랜덤 재생되도록 Random 함수 사용 해서 다음에 재생될 클립 설정
-				var index = Random.Range(0, FootstepAudioClips.Length);
-				//현재 캐릭터 위치를 기준으로 사운드 재생
-				AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.TransformPoint(_controller.center), FootstepAudioVolume);
+				//발소리 클립이 등록되어 있을 때만 실행된다.
+				if (FootstepAudioClips.Length > 0)
+				{
+					//발소리 클립이 랜덤 재생되도록 Random 함수 사용 해서 다음에 재생될 클립 설정
+					var index = Random.Range(0, FootstepAudioClips.Length);
+					//현재 캐릭터 위치를 기준으로 사운드 재생
+					AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.TransformPoint(_controller.center), FootstepAudioVolume);
+				}
 			}
 		}
 	}
@@ -524,8 +528,12 @@ public class DummyController : MonoBehaviourPun
 		//따라서 0.5 이상이면 발소리를 재생한다.
 		if (animationEvent.animatorClipInfo.weight > 0.5f)
 		{
-			//착지음을 캐릭터 위치에서 재생
-			AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
+			//해당 Dummy가 플레이어 근처이 있는 경우(약 20) 소리 재생
+			if (PlayerSensor.Instance.IsDummyInRange(gameObject))
+			{
+				//착지음을 캐릭터 위치에서 재생
+				AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
+			}
 		}
 	}
 }

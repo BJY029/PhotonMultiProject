@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using Photon.Pun;   //Photon Networking용 네임 스페이스
+using System.Collections.Generic;
 
 
-#if ENABLE_INPUT_SYSTEM 
+
+#if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem; //Input System을 사용하는 경우 사용
 #endif
 
@@ -194,9 +196,10 @@ namespace StarterAssets
             CameraRotation();
         }
 
-        //각 Animator 파라미터의 문자열 이름을 정수 해시값으로 변환하는 함수
-        //Update() 같은 반복 실행에서 효율적인 비교를 하기 위해 정수해시값으로 변환해서 사용
-        private void AssignAnimationIDs()
+
+		//각 Animator 파라미터의 문자열 이름을 정수 해시값으로 변환하는 함수
+		//Update() 같은 반복 실행에서 효율적인 비교를 하기 위해 정수해시값으로 변환해서 사용
+		private void AssignAnimationIDs()
         {
             _animIDSpeed = Animator.StringToHash("Speed");
             _animIDGrounded = Animator.StringToHash("Grounded");
@@ -452,13 +455,16 @@ namespace StarterAssets
             //따라서 0.5 이상이면 발소리를 재생한다.
             if (animationEvent.animatorClipInfo.weight > 0.5f)
             {
-                //발소리 클립이 등록되어 있을 때만 실행된다.
-                if (FootstepAudioClips.Length > 0)
+                if (PlayerSensor.Instance.IsDummyInRange(gameObject))
                 {
-                    //발소리 클립이 랜덤 재생되도록 Random 함수 사용 해서 다음에 재생될 클립 설정
-                    var index = Random.Range(0, FootstepAudioClips.Length);
-                    //현재 캐릭터 위치를 기준으로 사운드 재생
-                    AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.TransformPoint(_controller.center), FootstepAudioVolume);
+                    //발소리 클립이 등록되어 있을 때만 실행된다.
+                    if (FootstepAudioClips.Length > 0)
+                    {
+                        //발소리 클립이 랜덤 재생되도록 Random 함수 사용 해서 다음에 재생될 클립 설정
+                        var index = Random.Range(0, FootstepAudioClips.Length);
+                        //현재 캐릭터 위치를 기준으로 사운드 재생
+                        AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.TransformPoint(_controller.center), FootstepAudioVolume);
+                    }
                 }
             }
         }
@@ -472,8 +478,11 @@ namespace StarterAssets
 			//따라서 0.5 이상이면 발소리를 재생한다.
 			if (animationEvent.animatorClipInfo.weight > 0.5f)
             {
-                //착지음을 캐릭터 위치에서 재생
-                AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
+                if (PlayerSensor.Instance.IsDummyInRange(gameObject))
+                {
+                    //착지음을 캐릭터 위치에서 재생
+                    AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
+                }
             }
         }
     }
