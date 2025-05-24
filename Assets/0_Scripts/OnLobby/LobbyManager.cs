@@ -5,14 +5,19 @@ using UnityEngine.UI;
 
 public class LobbyManager : MonoBehaviourPunCallbacks
 {
+	public static LobbyManager instance;
+
 	private string gameVersion = "1";
 	public Text statusText;
 	public Text nicknameText;
 	public InputField nicknameInput;
 
+	public GameObject Warning_Password;
+
 	//master client가 씬을 옮기면, 해당되는 다른 유저들도 옮기도록 하기 위한 설정
 	private void Awake()
 	{
+		if (instance == null) instance = this;
 		PhotonNetwork.AutomaticallySyncScene = true;
 	}
 
@@ -63,11 +68,36 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 			{"Password", password}//키 "Password"에 해당 비번을 저장한다.
 		};
 
+		//로비에서는 CustomerRoomPropertiesForLobby에 포함된 키만 다른 유저의 RoomInfo에 저장된다.
+		//따라서 다음과 같은 설정을 해주지 않으면, 다른 user가 해당 방의 정보를 이용할 때 해당 정보를 
+		//이용할 수 없다.
+		options.CustomRoomPropertiesForLobby = new string[] { "Password" };
+
 		//Photon 서버에 방 생성 요청을 보낸다.
 			//RoomName : 유저가 입력한 방 이름
 			//options : 위에서 정의한 Room 옵션
 			//TypedLobby.Default : 기본 로비에 방을 등록(해당 설정이 없으면 로비에서 안 보일 수 있다.)
 		PhotonNetwork.CreateRoom(RoomName, options, TypedLobby.Default);
+	}
+
+	//방 참가를 시도하는 함수
+	public void TryJoinRoom(RoomInfo roomInfo, string InputPassWord)
+	{
+		//우선 참가하고자 하는 방 정보에 저장되어 있는 패스워드 값을 가져온다.
+		string correctPassword = roomInfo.CustomProperties["Password"]?.ToString();
+		//Debug.Log("room password : " + correctPassword);
+
+		//만약 입력된 패스워드와 실제 패스워드가 같은 경우
+		if(InputPassWord == correctPassword)
+		{
+			//해당 방에 참가한다.
+			PhotonNetwork.JoinRoom(roomInfo.Name);
+		}
+		else //일치 하지 않는 경우
+		{
+			//경고문을 띄워준다.
+			PopUpAnimController.Instance.PopUpWarning(Warning_Password, "비밀번호 불일치!");
+		}
 	}
 
 	//방에 성공적으로 참여하면 호출되는 함수
