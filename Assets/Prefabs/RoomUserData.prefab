@@ -169,6 +169,7 @@ GameObject:
   - component: {fileID: 129883928374089283}
   - component: {fileID: 8764143200534850506}
   - component: {fileID: 2173599682290337773}
+  - component: {fileID: 8379836144448964239}
   m_Layer: 5
   m_Name: RoomUserData
   m_TagString: Untagged
@@ -235,3 +236,17 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8379836144448964239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8000178347588050060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14d87061ed8b25f4da99ad99fab2a804, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nickNameText: {fileID: 8152985669925644161}
+  readyStatusText: {fileID: 6192318267663573783}
