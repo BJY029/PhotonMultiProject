@@ -1,14 +1,15 @@
 using Photon.Pun;
+using Photon.Pun.UtilityScripts;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Room_ButtonController : MonoBehaviour
 {
-    //Ready 버튼이 눌리면 호출되는 함수
-    public void ToogleReady()
+	//Ready 버튼이 눌리면 호출되는 함수
+	public void ToogleReady()
     {
-        //플레이어의 준비 상태는 나타내는 변수
+        //플레이어의 준비 상태를 나타내는 변수
         bool isReady = 
             //CustomProperties에 "IsReady" 키가 존재하지 않거나
             !PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("IsReady") ||
