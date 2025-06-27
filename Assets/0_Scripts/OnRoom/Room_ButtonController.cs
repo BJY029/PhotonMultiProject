@@ -57,12 +57,18 @@ public class Room_ButtonController : MonoBehaviour
             player.SetCustomProperties(props);
         }
 
-        //게임 씬으로 이동한다.
-        PhotonNetwork.LoadLevel("GameScene");
-    }
+		// LoadLevel 대신 코루틴으로 0.5초 대기 후 이동
+		StartCoroutine(DelayedLoadLevel("GameScene", 0.5f));
+	}
 
-    //Fisher-Yates Shuffle 알고리즘
-    public void Shuffle(IList list)
+	IEnumerator DelayedLoadLevel(string sceneName, float delay)
+	{
+		yield return new WaitForSeconds(delay);
+		PhotonNetwork.LoadLevel(sceneName);
+	}
+
+	//Fisher-Yates Shuffle 알고리즘
+	public void Shuffle(IList list)
     {
         //랜덤 객체 생성
         System.Random rand = new System.Random();
