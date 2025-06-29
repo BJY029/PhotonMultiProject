@@ -17,7 +17,7 @@ public class PlayerSensor : MonoBehaviour
 	//사용자의 범위 내에 들어온 Dummy를 해당 리스트에 저장
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.CompareTag("Dummy") || other.CompareTag("Player"))
+		if (other.CompareTag("Dummy") || other.CompareTag("Runner") || other.CompareTag("Seeker"))
 		{
 			detectableDummies.Add(other.gameObject);
 			//Debug.Log("더미가 감지되었습니다.");
@@ -26,7 +26,7 @@ public class PlayerSensor : MonoBehaviour
 	//사용자의 범위 밖으로 나간 Dummy들을 리스트에서 제거
 	private void OnTriggerExit(Collider other)
 	{
-		if (other.CompareTag("Dummy")||other.CompareTag("Player"))
+		if (other.CompareTag("Dummy")|| other.CompareTag("Runner") || other.CompareTag("Seeker"))
 		{
 			detectableDummies.Remove(other.gameObject);
 			//Debug.Log("더미가 삭제되었습니다.");

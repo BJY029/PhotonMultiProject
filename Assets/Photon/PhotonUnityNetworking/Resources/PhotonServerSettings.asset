@@ -40,6 +40,10 @@ MonoBehaviour:
   - Fire
   - RespawnSpaceship
   - RPC_SyncState
+  - UpdateCaptureProgress
+  - CaptureComplete
+  - RPC_OnRunnerEnter
+  - RPC_OnRunnerExit
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

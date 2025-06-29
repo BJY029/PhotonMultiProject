@@ -8,7 +8,12 @@ public class Photon_Manager : MonoBehaviourPunCallbacks
 
 	private void Start()
 	{
-
+		//현재 입장해서 생성된 플레이어가 master client이면
+		if (PhotonNetwork.IsMasterClient)
+		{
+			//Dummy를 생성한다.
+			DummySpawner.instance.LoadAndSpawnDummies();
+		}
 	}
 
 	//연결 끊어진 경우
