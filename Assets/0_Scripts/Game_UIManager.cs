@@ -1,6 +1,6 @@
 using Photon.Pun;
+using System.Collections.Generic;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +13,12 @@ public class Game_UIManager : MonoBehaviour
 	{
 		if(instance == null) instance = this;
 	}
+
+	//거점 상태 정보를 알려주는 UI
+	public GameObject SiteStatusUI;
+	//각 거점 상태 정보를 저장하는 UI 오브젝트의 이름과 오브젝트를 딕셔너리로 저장
+	public Dictionary<string, GameObject> SiteStatusDic = new Dictionary<string, GameObject>();
+
 
 	//내 역할을 알려주는 pannel을 없애는 애니메이션 재생을 위한 선언
 	public Animator PanelAnim;
@@ -37,6 +43,14 @@ public class Game_UIManager : MonoBehaviour
 	private void Start()
 	{
 		Panel.transform.localScale = Vector3.one;
+
+		//해당 UI 오브젝트의 자식에 달려있는 오브젝트들을 array로 저장
+		Transform[] childTransforms = SiteStatusUI.GetComponentsInChildren<Transform>();
+		//해당 array를 참고하여 딕셔너리 초기화
+		foreach (Transform t in childTransforms)
+		{
+			SiteStatusDic[t.gameObject.name] = t.gameObject;
+		}
 	}
 
 	//Runner UI 설정을 담당하는 코루틴
@@ -153,6 +167,37 @@ public class Game_UIManager : MonoBehaviour
 		}
 
 		isTyping = false;
+	}
+
+	//Site 점령 여부를 UI에 표시하는 함수
+	public void SetSiteComplete(string SiteName)
+	{
+		//매개변수로 받은 점령된 거점 이름을 Dictionary에서 검색한다.
+		//동일한 이름을 가진 요소가 존재하면, 해당 요소의 값(gameObject)를 반환한다.
+		if(SiteStatusDic.TryGetValue(SiteName, out var site))
+		{
+			//해당 오브젝트의 Image 요소를 받아온다.
+			Image s = site.GetComponent<Image>();
+			
+			//Image가 null이 아니라면
+            if(s != null)
+			{
+				//해당 색상은 그대로
+				Color c = s.color;
+				//알파값을 50%로 표시한다.
+				c.a = 0.5f;
+				//색상 초기화
+				s.color = c;
+			}
+			else //예외 처리
+			{
+				Debug.LogWarning($"{SiteName}에 Image 컴포넌트가 없습니다.");
+			}
+        }
+		else //예외 처리
+		{
+			Debug.LogWarning($"{SiteName}이 SiteStatusDic에 없습니다.");
+		}
 	}
 
 	//인자로 받은 색상을 hex 값으로 변환해서 문자열로 반환하는 함수

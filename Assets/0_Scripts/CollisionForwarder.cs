@@ -55,11 +55,13 @@ public class CollisionForwarder : MonoBehaviour
 				//MasterClient가 아니면
 				//MasterClient에게 거점에 플레이어가 떠났음을 RPC를 통해 알린다.
 				capturePoint.photonView.RPC("RPC_OnRunnerExit", RpcTarget.MasterClient);
+				//Debug.Log("(Non-Master)플레이어 거점 나감");
 			}
 			else
 			{
 				//MasterClient이면, 그냥 정보를 업데이트 한다.
 				capturePoint.OnChildTriggerExit(other);
+				//Debug.Log("(Master)플레이어 거점 나감");
 			}
 		}
 	}

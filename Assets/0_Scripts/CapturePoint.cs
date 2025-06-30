@@ -15,6 +15,9 @@ public class CapturePoint : MonoBehaviourPun
 	private int runnerCount = 0;
 	//UI 관련 코루틴을 저장하기 위한 변수
 	private Coroutine closeUICoroutine;
+	//RPC 호출 빈도 조절을 위한 변수 설졍
+	private float rpcCoolDown = 0.1f;
+	private float rpcTimer = 0f;
 
 	[Header("UI")]
 	//거점 점령 정보 슬라이더
@@ -56,6 +59,8 @@ public class CapturePoint : MonoBehaviourPun
 		//오직 MasterClient만 거점 정보를 업데이트 한다.(무결성)
 		if (!PhotonNetwork.IsMasterClient) return;
 
+		//RPC Timer 측정
+		rpcTimer += Time.deltaTime;
 		//만약 거점 내에 Runner 플레이어가 1명 이상 있고, 거점이 아직 점령되지 않았으면
 		if(runnerCount > 0 && captureProgress < captureTime)
 		{
@@ -63,9 +68,14 @@ public class CapturePoint : MonoBehaviourPun
 			//이때 거점 내에 플레이어 수에 따라 점령 속도를 빠르게 하기위해 로그 함수를 활용하여 곱한다.
 			captureProgress += Time.deltaTime * Mathf.Log(1 + runnerCount, 2);
 
-			//RPC 동기화
-			//해당 점령 정보를 모든 클라이언트에게 RPC를 통해 전달 한다.
-			photonView.RPC("UpdateCaptureProgress", RpcTarget.All, captureProgress);
+			//만약 Rpc가 호출되고 0.1초가 지나면, Rpc를 호출한다.(즉 동기화 주기 0.1초)
+			if (rpcTimer >= rpcCoolDown)
+			{
+				//RPC 동기화
+				//해당 점령 정보를 모든 클라이언트에게 RPC를 통해 전달 한다.
+				photonView.RPC("UpdateCaptureProgress", RpcTarget.All, captureProgress);
+				rpcTimer = 0;
+			}
 
 			//만약 점령이 완료되면
 			if(captureProgress >= captureTime)
@@ -122,6 +132,8 @@ public class CapturePoint : MonoBehaviourPun
 		//만약 show 값이 true이면
 		if (show)
 		{
+			//거점 이름 초기화
+			SiteText.text = "Site : " + pointName;
 			//UI를 닫는 코루틴이 재생중이라면
 			if (closeUICoroutine != null)
 			{
@@ -222,6 +234,8 @@ public class CapturePoint : MonoBehaviourPun
 
 		//임시로 점령 완료했음을 디버그로 알림
 		Debug.Log($"{pointName} 점령 완료!");
+		//거점 점령 완료를 UI에 표시
+		Game_UIManager.instance.SetSiteComplete(pointName);
 		//UI를 닫고
 		UIanimator.Play("SliderClose");
 		//해당 거점 자체를 비활성화한다.
