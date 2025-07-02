@@ -44,6 +44,9 @@ MonoBehaviour:
   - CaptureComplete
   - RPC_OnRunnerEnter
   - RPC_OnRunnerExit
+  - AlertAllPointCapturedF
+  - DeactiveSite
+  - <CheckAllCaptured>g__DeactiveSite|7_0
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

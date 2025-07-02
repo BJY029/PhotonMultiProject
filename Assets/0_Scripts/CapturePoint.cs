@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 using System.Collections;
+using System.Drawing;
+using System.Text.RegularExpressions;
 
 public class CapturePoint : MonoBehaviourPun
 {
@@ -91,6 +93,8 @@ public class CapturePoint : MonoBehaviourPun
 	//점령이 완료된 경우
 	private void OnCaptured()
 	{
+		//점령된 거점들을 리스트에 저장한다.
+		CapturePointManager.Instance.UpdateCapturedPoint(this);
 		//모든 클라이언트에게 점령이 완료되었음을 RPC를 통해 알린다.
 		photonView.RPC("CaptureComplete", RpcTarget.All);
 	}
@@ -212,7 +216,6 @@ public class CapturePoint : MonoBehaviourPun
 	{
 		//runner Count를 1 증가시킨다.
 		runnerCount++;
-		
 	}
 
 	//MasterClient가 아닌 Runner Client가 거점에서 나간 경우
@@ -224,6 +227,7 @@ public class CapturePoint : MonoBehaviourPun
 		runnerCount = Mathf.Max(0, runnerCount - 1);
 	}
 
+
 	//점령이 완료되었을 때 모든 클라이언트에게 호출되는 함수
 	[PunRPC]
 	void CaptureComplete()
@@ -232,12 +236,16 @@ public class CapturePoint : MonoBehaviourPun
 		captureProgress = captureTime;
 		if(SiteSlider != null) SiteSlider.value = captureProgress;
 
-		//임시로 점령 완료했음을 디버그로 알림
-		Debug.Log($"{pointName} 점령 완료!");
+		//점령 정보를 표기해 주는 Text UI 활성화
+		Game_UIManager.instance.CapturedAlertActivated(pointName);
 		//거점 점령 완료를 UI에 표시
 		Game_UIManager.instance.SetSiteComplete(pointName);
 		//UI를 닫고
 		UIanimator.Play("SliderClose");
+
+		//점령 미션이 완료되었는지 확인하기위한 코드
+		CapturePointManager.Instance.CheckAllCaptured();
+
 		//해당 거점 자체를 비활성화한다.
 		gameObject.SetActive(false);
 	}

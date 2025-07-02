@@ -4,7 +4,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Game_UIManager : MonoBehaviour
+public class Game_UIManager : MonoBehaviourPun
 {
 	//싱글턴으로 제작
 	public static Game_UIManager instance;
@@ -18,6 +18,9 @@ public class Game_UIManager : MonoBehaviour
 	public GameObject SiteStatusUI;
 	//각 거점 상태 정보를 저장하는 UI 오브젝트의 이름과 오브젝트를 딕셔너리로 저장
 	public Dictionary<string, GameObject> SiteStatusDic = new Dictionary<string, GameObject>();
+	//거점이 점령되면 활성화 되는 UI
+	public GameObject CapturedAlertUI;
+	public bool AlertUIFlag;
 
 
 	//내 역할을 알려주는 pannel을 없애는 애니메이션 재생을 위한 선언
@@ -43,6 +46,8 @@ public class Game_UIManager : MonoBehaviour
 	private void Start()
 	{
 		Panel.transform.localScale = Vector3.one;
+		CapturedAlertUI.transform.localScale = Vector3.one;
+		CapturedAlertUI.SetActive(false);
 
 		//해당 UI 오브젝트의 자식에 달려있는 오브젝트들을 array로 저장
 		Transform[] childTransforms = SiteStatusUI.GetComponentsInChildren<Transform>();
@@ -52,6 +57,55 @@ public class Game_UIManager : MonoBehaviour
 			SiteStatusDic[t.gameObject.name] = t.gameObject;
 		}
 	}
+
+	[PunRPC]//RPC로 호출하기 위해 선언된 함수
+	public void AlertAllPointCapturedF(string str, Vector2 colorVec1, Vector2 colorVec2)
+	{
+		//Vector2 값을 합쳐서 색상 값으로 변환 후
+		Color TextColor = new Color(colorVec1.x, colorVec1.y, colorVec2.x, colorVec2.y);
+		//코루틴을 수행한다.
+		StartCoroutine(Game_UIManager.instance.AlertAllPointCaptured(str, TextColor));
+	}
+
+	//특정 거점이 점령되었다는 UI가 종료된 후에, 해당 UI를 띄우도록 하기 위해 다음과 같이 딜레이를 준다.
+	public IEnumerator AlertAllPointCaptured(string str, Color color)
+	{
+		yield return new WaitForSeconds(0.5f);
+		yield return new WaitUntil(() => !AlertUIFlag);
+		CapturedAlertActivated(str, color);
+	}
+
+	//거점 점령 UI를 활성화해주는 함수
+	public void CapturedAlertActivated(string name)
+	{
+		AlertUIFlag = true;
+		//전달받은 거점 이름을 UI에 포함시킨다.
+		Text Alert = CapturedAlertUI.GetComponent<Text>();
+		Alert.text = name + " has been captured";
+		//UI 활성화 하고
+		CapturedAlertUI.SetActive(true);
+		//애니메이션을 재생하여 UI가 표시되도록 한다.
+		Animator AlertAnim = CapturedAlertUI.GetComponent<Animator>();
+		AlertAnim.Play("CaptureAlertPopUp");
+
+		//해당 UI는 일정 이상이 지나면 이벤트로 인해 자동적으로 비활성화된다.
+	}
+
+	//override
+	public void  CapturedAlertActivated(string str, Color coler)
+	{
+		AlertUIFlag = true;
+		//전달받은 거점 이름을 UI에 포함시킨다.
+		Text Alert = CapturedAlertUI.GetComponent<Text>();
+		Alert.color = coler; 
+		Alert.text = str;
+		//UI 활성화 하고
+		CapturedAlertUI.SetActive(true);
+		//애니메이션을 재생하여 UI가 표시되도록 한다.
+		Animator AlertAnim = CapturedAlertUI.GetComponent<Animator>();
+		AlertAnim.Play("CaptureAlertPopUp");
+	}
+
 
 	//Runner UI 설정을 담당하는 코루틴
 	public IEnumerator InitRunnerUI()
