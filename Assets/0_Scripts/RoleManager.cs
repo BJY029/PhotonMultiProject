@@ -113,7 +113,7 @@ public class RoleManager : MonoBehaviour
 	{
 		//랜덤한 위치에 플레이어 프리팹 생성
 		Vector3 spawnPosition = new Vector3(UnityEngine.Random.Range(93.0f, 88.0f), 2.0f, UnityEngine.Random.Range(-6.0f, -7.0f));
-		playerObj = PhotonNetwork.Instantiate("Seeker", spawnPosition, Quaternion.identity);
+		playerObj = PhotonNetwork.Instantiate("Seeker(Testing)", spawnPosition, Quaternion.identity);
 		//씬에는 카메라가 하나는 존재해야 하며, Audio Listener가 하나 존재해야 하기 때문에, 기본 카메라를 설정해 놓고
 		//플레이어 하나 이상이 들어온 경우, 기본 카메라를 비활성화 시킨다.
 		if (camera != null) camera.SetActive(false);
