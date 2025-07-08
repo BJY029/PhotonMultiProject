@@ -82,9 +82,11 @@ namespace StarterAssets
         public bool LockCameraPosition = false; //카메라 위치 고정 여부
 
 
-        //=====================내부 상태 변수======================
-        // cinemachine
-        private float _cinemachineTargetYaw;
+
+
+		//=====================내부 상태 변수======================
+		// cinemachine
+		private float _cinemachineTargetYaw;
         private float _cinemachineTargetPitch;
 
         // player

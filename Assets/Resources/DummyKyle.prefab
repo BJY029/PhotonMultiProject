@@ -837,7 +837,7 @@ GameObject:
   - component: {fileID: 1520020098936569789}
   - component: {fileID: 7434505537948515633}
   - component: {fileID: 8233989877316908872}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: DummyKyle
   m_TagString: Dummy
   m_Icon: {fileID: 0}
@@ -982,7 +982,7 @@ MonoBehaviour:
   GroundedRadius: 0.28
   GroundLayers:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 64
   maxDistance: 10
 --- !u!114 &1520020098936569789
 MonoBehaviour:

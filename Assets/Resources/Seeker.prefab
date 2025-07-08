@@ -4212,7 +4212,7 @@ GameObject:
   - component: {fileID: 6143472864758620100}
   - component: {fileID: 4791836588989902014}
   - component: {fileID: 680341639501365128}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Seeker
   m_TagString: Seeker
   m_Icon: {fileID: 0}
@@ -4323,7 +4323,7 @@ MonoBehaviour:
   GroundedRadius: 0.28
   GroundLayers:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 64
   CameraRoot: {fileID: 1589743270494431991}
   TopClamp: 89
   BottomClamp: -89
@@ -5064,7 +5064,7 @@ GameObject:
   - component: {fileID: 417009341963290397}
   - component: {fileID: 3983364454359677911}
   - component: {fileID: 1772375313495098580}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: FootStepSensor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
