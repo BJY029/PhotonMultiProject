@@ -47,6 +47,9 @@ MonoBehaviour:
   - AlertAllPointCapturedF
   - DeactiveSite
   - <CheckAllCaptured>g__DeactiveSite|7_0
+  - GetMyRole
+  - GetDamagedBySeeker
+  - DestroySelf
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

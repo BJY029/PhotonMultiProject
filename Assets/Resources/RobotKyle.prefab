@@ -1227,6 +1227,7 @@ GameObject:
   - component: {fileID: 3480439229558852668}
   - component: {fileID: 3631850974952536254}
   - component: {fileID: 9164447026878847670}
+  - component: {fileID: 1031727511787347520}
   m_Layer: 0
   m_Name: RobotKyle
   m_TagString: Runner
@@ -1312,8 +1313,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26e54e5a728a9234ab24fcf1460ed8a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 10
-  SprintSpeed: 5.335
+  MoveSpeed: 2
+  SprintSpeed: 8
+  StaminaMaxValue: 100
+  minRunStamina: 5
+  staminaDecreaseRate: 15
+  staminaRecoverRate: 20
+  staminaRecoverDelay: 2
+  recoverTimer: 0
   RotationSmoothTime: 0.12
   SpeedChangeRate: 10
   LandingAudioClip: {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
@@ -1552,6 +1559,19 @@ MonoBehaviour:
   m_SynchronizeLayers:
   - SynchronizeType: 1
     LayerIndex: 0
+--- !u!114 &1031727511787347520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2781643032218088300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d248031932aa474e9ed91e318436127, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HeartsMaxValue: 100
 --- !u!1 &2932589739606657012
 GameObject:
   m_ObjectHideFlags: 0

@@ -27,7 +27,22 @@ namespace StarterAssets
         [Tooltip("Sprint speed of the character in m/s")]
         public float SprintSpeed = 5.335f; //달리기 속도
 
-        [Tooltip("How fast the character turns to face movement direction")]
+		private float CurrentStamina;
+
+        [SerializeField]
+		private float StaminaMaxValue = 100;
+		[SerializeField]
+		private float minRunStamina = 5f;
+		[SerializeField]
+		private float staminaDecreaseRate = 15f;
+		[SerializeField]
+		private float staminaRecoverRate = 20f;
+        [SerializeField]
+        private float staminaRecoverDelay = 2f;
+        [SerializeField]
+        private float recoverTimer = 0f;
+
+		[Tooltip("How fast the character turns to face movement direction")]
         [Range(0.0f, 0.3f)]
         public float RotationSmoothTime = 0.12f; //회전 부드러움
 
@@ -178,6 +193,10 @@ namespace StarterAssets
 				return;
 			}
             _mainCamera.SetActive(true);
+
+            Game_UIManager.instance.Stamina.maxValue = StaminaMaxValue;
+            Game_UIManager.instance.Stamina.value = StaminaMaxValue;
+            CurrentStamina = StaminaMaxValue;
 		}
 
         private void Update()
@@ -267,8 +286,51 @@ namespace StarterAssets
         //이동 관련 함수
         private void Move()
         {
-            //달리기(_input.sprint)가 true이면 달리기 속도, 아니면 걷기 속도를 적용
-            float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+            //달리기 버튼이 눌렸고, 현재 스테미너가 충분한 경우 달리기가 가능하도록 처리
+            bool isRunning = _input.sprint && CurrentStamina > minRunStamina;
+            //isRunning flag에 따라서 목표 속도를 결정
+            float targetSpeed = isRunning ? SprintSpeed : MoveSpeed;
+
+            //현재 달리는 중이라면
+            if (isRunning)
+            {
+                //스테미너 회복 타이머를 0으로 초기화
+                recoverTimer = 0f;
+                //스테미너 값을 staminaDecreaseRate에 맞게 감소시킨다.(1초에 해당 비율만큼 감소)
+                CurrentStamina -= staminaDecreaseRate * Time.deltaTime;
+                //만약 스테미너가 음수가 되면
+                if (CurrentStamina < 0f)
+                {
+                    //스테미너를 0으로 초기화 하고
+                    CurrentStamina = 0f;
+                    //isRunning을 강제로 false 처리 한다.
+                    //이는 처리 과정에서 한 프레임이 음수로 처리되어 달리기 처리되는 것을 막음
+                    isRunning = false;
+                }
+            }
+            else //달리기 상태가 아니면
+            {
+                //만약 스테미너 회복 타이머만큼 시간이 안지나면
+                if (recoverTimer < staminaRecoverDelay)
+                {
+                    //회복 타이머를 채운 후
+                    recoverTimer += Time.deltaTime;
+                }
+                else //타이머가 돌면
+                {
+                    //스테미너를 회복시킨다.
+                    if (CurrentStamina < StaminaMaxValue)
+                    {
+                        //staminaRecoverRate 만큼 스테미너 회복
+                        CurrentStamina += staminaRecoverRate * Time.deltaTime;
+                        //예외 처리
+                        if (CurrentStamina > StaminaMaxValue)
+                            CurrentStamina = StaminaMaxValue;
+                    }
+                }
+            }
+            //위에서 결정된 stamina 값을 UI에 반영
+            Game_UIManager.instance.Stamina.value = CurrentStamina;
 
             // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
 

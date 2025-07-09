@@ -3,17 +3,23 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Realtime;
 
 public class Game_UIManager : MonoBehaviourPun
 {
 	//싱글턴으로 제작
 	public static Game_UIManager instance;
 
+	//플레이어 정보 저장
+	private Player thisPlayer;
+	private PlayerRoles myRole;
+
 	private void Awake()
 	{
 		if(instance == null) instance = this;
 	}
 
+	public GameObject CrossHair;
 	//거점 상태 정보를 알려주는 UI
 	public GameObject SiteStatusUI;
 	//각 거점 상태 정보를 저장하는 UI 오브젝트의 이름과 오브젝트를 딕셔너리로 저장
@@ -22,7 +28,7 @@ public class Game_UIManager : MonoBehaviourPun
 	public GameObject CapturedAlertUI;
 	public bool AlertUIFlag;
 
-
+	[Header("UIs")]
 	//내 역할을 알려주는 pannel을 없애는 애니메이션 재생을 위한 선언
 	public Animator PanelAnim;
 	//역할을 알려주기 위한 UI들
@@ -30,6 +36,9 @@ public class Game_UIManager : MonoBehaviourPun
     public Text Role;
 	public Text Desc;
 	public Text Timer;
+
+	public Slider Hearts;
+	public Slider Stamina;
 
 	//각종 flag들
     public bool isTyping;
@@ -45,9 +54,11 @@ public class Game_UIManager : MonoBehaviourPun
 
 	private void Start()
 	{
+		CrossHair.SetActive(false);
 		Panel.transform.localScale = Vector3.one;
 		CapturedAlertUI.transform.localScale = Vector3.one;
 		CapturedAlertUI.SetActive(false);
+
 
 		//해당 UI 오브젝트의 자식에 달려있는 오브젝트들을 array로 저장
 		Transform[] childTransforms = SiteStatusUI.GetComponentsInChildren<Transform>();
@@ -56,6 +67,16 @@ public class Game_UIManager : MonoBehaviourPun
 		{
 			SiteStatusDic[t.gameObject.name] = t.gameObject;
 		}
+	}
+
+	public void setStaminaSliderValue(float value)
+	{
+		Stamina.value = value;
+	}
+
+	public void setHeartSliderValue(float value)
+	{
+		Hearts.value = value;
 	}
 
 	[PunRPC]//RPC로 호출하기 위해 선언된 함수

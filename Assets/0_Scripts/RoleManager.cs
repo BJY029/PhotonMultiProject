@@ -14,6 +14,13 @@ public enum PlayerRoles
 
 public class RoleManager : MonoBehaviour
 {
+    public static RoleManager instance;
+
+	private void Awake()
+	{
+		if(instance == null) instance = this;
+	}
+
 	public GameObject camera;
 
     //플레이어의 역할을 저장하는 객체
@@ -78,7 +85,10 @@ public class RoleManager : MonoBehaviour
 		yield return new WaitUntil(() => !Game_UIManager.instance.isIniting);
         //Controller를 다시 활성화해서 움직일 수 있도록 한다.
         PC.enabled = true;
+        Game_UIManager.instance.CrossHair.SetActive(true);
 	}
+
+
 
     //내 역할이 무엇인지 찾아서 반환하는 함수
 	public PlayerRoles GetMyRole()
