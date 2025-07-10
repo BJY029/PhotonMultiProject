@@ -2,28 +2,45 @@ using UnityEngine;
 
 public class CameraCollision : MonoBehaviour
 {
+	public static CameraCollision instance;
+
+	private void Awake()
+	{
+		if(instance == null) instance = this;
+	}
+
 	//Player의 위치 조정
 	public Transform player;
 	//기본 카메라 거리
 	public float distance = 5f;
+	//확대 카메라 거리
+	public float zoomDistance = 3.5f;
 	//카메라 거리 조정 속도
 	public float smoothSpeed = 10f;
 	//벽 레이어
 	public LayerMask collisionLayer;
+	//확대 여부 flag
+	public bool zoom;
+
+	private void Start()
+	{
+		zoom = false;
+	}
 
 	private void LateUpdate()
 	{
+		float Distance = zoom ? zoomDistance : distance;
 		//기본 카메라 위치 설정
-		Vector3 desiredCameraPos = player.position - player.forward * distance + Vector3.up * 2f;
+		Vector3 desiredCameraPos = player.position - player.forward * Distance + Vector3.up * 2f;
 
 		//RayCasy 정의
 		RaycastHit hit;
 		//Ray 발사 방향 : 캐릭터 기준 카메라 방향
 		Vector3 rayDirection = (desiredCameraPos - player.position).normalized;
 		//Ray 거리 : 우선 기본 카메라 거리로 초기화
-		float rayDistance = distance;
+		float rayDistance = Distance;
 		//캐릭터 위치에서 Ray 방향으로 Ray 광선 발사, 최대 거리는 기본 거리인 distance, 충돌 레이어는 collisionLayer로 한정
-		if (Physics.Raycast(player.position, rayDirection, out hit, distance, collisionLayer))
+		if (Physics.Raycast(player.position, rayDirection, out hit, Distance, collisionLayer))
 		{
 			//충돌체가 존재하면, 해당 충돌치 거리만큼 Ray 거리를 초기화
 			//1을 빼는 이유는, 카메라가 벽에 딱 붙지 않도록 방지하기 위함

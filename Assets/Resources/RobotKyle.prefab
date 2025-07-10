@@ -882,10 +882,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 745061273023692739}
   distance: 2
+  zoomDistance: 3.5
   smoothSpeed: 10
   collisionLayer:
     serializedVersion: 2
     m_Bits: 64
+  zoom: 0
 --- !u!1 &2257950284461399962
 GameObject:
   m_ObjectHideFlags: 0
@@ -1349,6 +1351,7 @@ MonoBehaviour:
   CameraRoot: {fileID: 8860171856586016500}
   TopClamp: 89
   BottomClamp: -89
+  Sensitivity: 1
   CameraAngleOverride: 0
   LockCameraPosition: 0
   _mainCamera: {fileID: 2192224642673570605}

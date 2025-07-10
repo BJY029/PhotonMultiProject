@@ -494,6 +494,7 @@ MonoBehaviour:
   CameraRoot: {fileID: 5159381706927085177}
   TopClamp: 30
   BottomClamp: -40
+  Sensitivity: 1
   CameraAngleOverride: 0
   LockCameraPosition: 0
   _mainCamera: {fileID: 2887912560555400201}
@@ -586,6 +587,7 @@ MonoBehaviour:
   range: 100
   damageToRunnner: 40
   damageToSeekerOnDummyHit: 10
+  chargeDelay: 2
 --- !u!114 &2104663759145150865
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -981,10 +983,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1210186877982196450}
   distance: 2
+  zoomDistance: 1
   smoothSpeed: 10
   collisionLayer:
     serializedVersion: 2
     m_Bits: 64
+  zoom: 0
 --- !u!1 &2931319310070912328
 GameObject:
   m_ObjectHideFlags: 0

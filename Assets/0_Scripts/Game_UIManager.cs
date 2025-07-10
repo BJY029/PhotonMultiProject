@@ -28,6 +28,16 @@ public class Game_UIManager : MonoBehaviourPun
 	public GameObject CapturedAlertUI;
 	public bool AlertUIFlag;
 
+	[Header("Seeker UI")]
+	//총 충전도를 나타내는 UI
+	public GameObject GunChargeUI;
+	//충전 중일때 사용할 sprite
+	public Sprite NonCharged;
+	//충전 완료시 사용할 sprite
+	public Sprite Charged;
+	//충전 중일때 표시할 UI
+	public GameObject blur;
+
 	[Header("UIs")]
 	//내 역할을 알려주는 pannel을 없애는 애니메이션 재생을 위한 선언
 	public Animator PanelAnim;
@@ -54,7 +64,11 @@ public class Game_UIManager : MonoBehaviourPun
 
 	private void Start()
 	{
+		//Seeker 전용 UI는 기본적으로 set false
+		//해당 UI는 RoleManager에서 Seeker 코루틴이 끝난 후 true로 설정된다.
 		CrossHair.SetActive(false);
+		GunChargeUI.SetActive(false);
+
 		Panel.transform.localScale = Vector3.one;
 		CapturedAlertUI.transform.localScale = Vector3.one;
 		CapturedAlertUI.SetActive(false);
@@ -67,6 +81,21 @@ public class Game_UIManager : MonoBehaviourPun
 		{
 			SiteStatusDic[t.gameObject.name] = t.gameObject;
 		}
+	}
+	
+	//총 충전도를 0으로 초기화 시키는 함수
+	public void GunUIInit()
+	{
+		Image img = GunChargeUI.GetComponent<Image>();
+		img.sprite = NonCharged;
+		blur.transform.localScale = Vector3.one;
+	}
+
+	//총 충전도가 완충일 때 사용되는 함수
+	public void GunUICharged()
+	{
+		Image img = GunChargeUI.GetComponent<Image>();
+		img.sprite = Charged;
 	}
 
 	public void setStaminaSliderValue(float value)

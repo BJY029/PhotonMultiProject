@@ -90,6 +90,10 @@ namespace StarterAssets
         [Tooltip("How far in degrees can you move the camera down")]
         public float BottomClamp = -90.0f;//아래쪽 카메라 회전 제한
 
+        [Tooltip("Camera sensitivity")]
+        [Range(0.0f, 2.0f)]
+        public float Sensitivity = 1f;
+
         [Tooltip("Additional degress to override the camera. Useful for fine tuning camera position when locked")]
         public float CameraAngleOverride = 0.0f;//카메라 각도 보정
 
@@ -267,9 +271,9 @@ namespace StarterAssets
             float deltaTimeMultipler = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 
             //좌우 회전 값, 캐릭터 기준 Y축 회전으로 마우스 X축 또는 패드 좌우로 조정
-            _cinemachineTargetYaw += _input.look.x * deltaTimeMultipler;
+            _cinemachineTargetYaw += _input.look.x * deltaTimeMultipler * Sensitivity;
             //상하 회전 값, 카메라 기준 X축 회전, 마우스 Y축 혹은 패드 상하로 조정(마우스 상하 반전 효과로 음수)
-            _cinemachineTargetPitch -= _input.look.y * deltaTimeMultipler;
+            _cinemachineTargetPitch -= _input.look.y * deltaTimeMultipler * Sensitivity;
 
             //상하 회전 각도를 위아래로 제한
             _cinemachineTargetPitch = Mathf.Clamp(_cinemachineTargetPitch, BottomClamp, TopClamp);
@@ -286,8 +290,11 @@ namespace StarterAssets
         //이동 관련 함수
         private void Move()
         {
-            //달리기 버튼이 눌렸고, 현재 스테미너가 충분한 경우 달리기가 가능하도록 처리
-            bool isRunning = _input.sprint && CurrentStamina > minRunStamina;
+			//플레이어 컨트롤러의 x,z 축의 벡터의 크기, 즉 플레이어의 수평 속도를 구한다.
+			float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
+
+			//달리기 버튼이 눌렸고, 현재 스테미너가 충분한 경우 달리기가 가능하도록 처리
+			bool isRunning = _input.sprint && currentHorizontalSpeed > 0.1f && CurrentStamina > minRunStamina;
             //isRunning flag에 따라서 목표 속도를 결정
             float targetSpeed = isRunning ? SprintSpeed : MoveSpeed;
 
@@ -340,8 +347,7 @@ namespace StarterAssets
             // 입력이 없는 경우, 속도를 0으로 설정한다.
             if (_input.move == Vector2.zero) targetSpeed = 0.0f;
 
-            //플레이어 컨트롤러의 x,z 축의 벡터의 크기, 즉 플레이어의 수평 속도를 구한다.
-            float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
+            
 
             float speedOffset = 0.1f;
             //아날로그 입력일 경우, 입력 세기를 사용, 아니면 1로 고정

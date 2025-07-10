@@ -86,6 +86,7 @@ public class RoleManager : MonoBehaviour
         //Controller를 다시 활성화해서 움직일 수 있도록 한다.
         PC.enabled = true;
         Game_UIManager.instance.CrossHair.SetActive(true);
+        Game_UIManager.instance.GunChargeUI.SetActive(true);
 	}
 
 
