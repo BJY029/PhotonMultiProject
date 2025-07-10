@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 using StarterAssets;
+using System.Collections;
 public class SeekerGun : MonoBehaviourPun
 {
     //Seeker에 부착된 카메라로, 해당 카메라를 기준으로 Ray를 쏜다.
@@ -24,6 +25,9 @@ public class SeekerGun : MonoBehaviourPun
     private ThirdPersonController TPC;
     //본래 감도를 저장하는 변수
 	private float originSensitivity;
+
+    public Transform firePoint;
+
 
 	private void Start()
 	{
@@ -84,6 +88,16 @@ public class SeekerGun : MonoBehaviourPun
         //seeker 카메라 기준으로, seeker가 바라보는 방향으로 Ray를 발사한다.
         if(Physics.Raycast(seekerCam.transform.position, seekerCam.transform.forward, out hit, range))
         {
+            //총알 발사 이펙트 및 총알 이펙트를 네트워크 상에서 생성
+            GameObject muzzle = PhotonNetwork.Instantiate("SmallEnergyMuzzle", firePoint.position, seekerCam.transform.rotation);
+			GameObject bullet = PhotonNetwork.Instantiate("SmallEnergyBullet", firePoint.position, seekerCam.transform.rotation);
+			//각각 이펙트에 붙어있는 PhotonView를 가져온다.
+            PhotonView muzzlePV = muzzle.GetComponent<PhotonView>();
+			PhotonView bulletPV = bullet.GetComponent<PhotonView>();
+            //각 총알에 붙어있는 PhotonView가 모든 클라이언트에게 해당 함수들을 실행하라고 요청한다.
+			muzzlePV.RPC("RPC_Muzzle", RpcTarget.All);
+            bulletPV.RPC("RPC_MoveBullet", RpcTarget.All, hit.point);
+
             //만약 맞은 오브젝트의 태그가 Runner인 경우
             if (hit.transform.CompareTag("Runner"))
             {

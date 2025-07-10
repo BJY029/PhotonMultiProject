@@ -50,6 +50,9 @@ MonoBehaviour:
   - GetMyRole
   - GetDamagedBySeeker
   - DestroySelf
+  - RPC_SpawnBullet
+  - RPC_MoveBullet
+  - RPC_Muzzle
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
