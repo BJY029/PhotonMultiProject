@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7194918686580741085}
   - component: {fileID: 4275794424574108093}
   - component: {fileID: 2974565875006558441}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4902,7 +4902,7 @@ GameObject:
   - component: {fileID: 2514456316146051396}
   - component: {fileID: 8898933919662331703}
   - component: {fileID: 5939869769619975765}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: CoreWhite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9802,7 +9802,7 @@ GameObject:
   - component: {fileID: 1397073853457830275}
   - component: {fileID: 7392178351711933462}
   - component: {fileID: 3084506518694234501}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Spike2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14693,7 +14693,7 @@ GameObject:
   - component: {fileID: 9165282846516415621}
   - component: {fileID: 6407564420458848990}
   - component: {fileID: 3937195364469238695}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: CoreWhite3D2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19584,7 +19584,7 @@ GameObject:
   - component: {fileID: 8350099010396049602}
   - component: {fileID: 2414643984938987686}
   - component: {fileID: 5393758991047216096}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Circle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24484,7 +24484,7 @@ GameObject:
   - component: {fileID: 1567487533992392726}
   - component: {fileID: 1974020577395126342}
   - component: {fileID: 976650060559409953}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: LightCone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29375,7 +29375,7 @@ GameObject:
   - component: {fileID: 4458034000910489474}
   - component: {fileID: 6060968827948317952}
   - component: {fileID: 3274797704531683074}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: CoreSpikeGreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34266,8 +34266,7 @@ GameObject:
   - component: {fileID: 5817506786081900256}
   - component: {fileID: 10318081583025600}
   - component: {fileID: 2039566643380226913}
-  - component: {fileID: 9117059179293975742}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: SmallEnergyBulletHit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39155,28 +39154,6 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &9117059179293975742
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8926623346772015102}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents: []
-  sceneViewId: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
 --- !u!1 &9199206219837529193
 GameObject:
   m_ObjectHideFlags: 0
@@ -39188,7 +39165,7 @@ GameObject:
   - component: {fileID: 4016347165755951842}
   - component: {fileID: 1416928190066229030}
   - component: {fileID: 5890134519246153260}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: SparkleSpike
   m_TagString: Untagged
   m_Icon: {fileID: 0}

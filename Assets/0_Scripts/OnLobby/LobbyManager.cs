@@ -31,6 +31,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
 	public void Connect()
 	{
+		//원할한 디버기을 위해 게임 서버 지역 고정
+		PhotonNetwork.PhotonServerSettings.AppSettings.FixedRegion = "kr";
 		//버전을 설정하고
 		PhotonNetwork.GameVersion = gameVersion;
 		//서버 접속을 시도한다.
@@ -53,6 +55,10 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 	public override void OnJoinedLobby()
 	{
 		statusText.text = "Lobby joined.";
+		Debug.Log("Connected Region: " + PhotonNetwork.CloudRegion);
+		Debug.Log("AppVersion: " + PhotonNetwork.AppVersion);
+		Debug.Log("Connected: " + PhotonNetwork.IsConnected);
+		Debug.Log("In Lobby: " + PhotonNetwork.InLobby);
 	}
 
 	//방 이름과 비밀번호를 전달 받으면, 해당 정보들로 방을 생성하는 함수

@@ -36,7 +36,10 @@ public class Bullet : MonoBehaviourPun
 			Destroy(impact, 1f);
 		}
 
-		//총알 임펙트를 네트워크 상에서 파괴한다.
-		PhotonNetwork.Destroy(gameObject);
+		if (PhotonNetwork.IsMasterClient)
+		{
+			//총알 임펙트를 네트워크 상에서 파괴한다.
+			PhotonNetwork.Destroy(gameObject);
+		}
 	}
 }

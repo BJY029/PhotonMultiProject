@@ -2554,7 +2554,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 503
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -4299,6 +4299,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MoveSpeed: 2.3
   SprintSpeed: 5.335
+  StaminaMaxValue: 100
+  minRunStamina: 5
+  staminaDecreaseRate: 15
+  staminaRecoverRate: 20
+  staminaRecoverDelay: 2
+  recoverTimer: 0
   RotationSmoothTime: 0.12
   SpeedChangeRate: 10
   LandingAudioClip: {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
@@ -4327,6 +4333,7 @@ MonoBehaviour:
   CameraRoot: {fileID: 1589743270494431991}
   TopClamp: 89
   BottomClamp: -89
+  Sensitivity: 1
   CameraAngleOverride: 0
   LockCameraPosition: 0
   _mainCamera: {fileID: 4641680962762894870}

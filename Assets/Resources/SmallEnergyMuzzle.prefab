@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2435196116956032887}
   - component: {fileID: 8269211381620787714}
   - component: {fileID: 271997202851834779}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Circle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4911,7 +4911,7 @@ GameObject:
   - component: {fileID: 5196052806266955296}
   - component: {fileID: 6205205005301714015}
   - component: {fileID: 5439013135415408968}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: CoreWhite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9811,7 +9811,7 @@ GameObject:
   - component: {fileID: 526329075250436121}
   - component: {fileID: 8168695917117100167}
   - component: {fileID: 6447847165015167539}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: CoreWhite3D2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14702,7 +14702,7 @@ GameObject:
   - component: {fileID: 2145089713820970346}
   - component: {fileID: 997376645118915055}
   - component: {fileID: 393674180725288621}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: MuzzleCenter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19607,7 +19607,7 @@ GameObject:
   - component: {fileID: 3280424946019830864}
   - component: {fileID: -3919280137727839627}
   - component: {fileID: 7670592496383909870}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: SmallEnergyMuzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24538,7 +24538,7 @@ GameObject:
   - component: {fileID: 8085571617146620646}
   - component: {fileID: 8878497866941803956}
   - component: {fileID: 6308766391952415734}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: MuzzleEdge
   m_TagString: Untagged
   m_Icon: {fileID: 0}

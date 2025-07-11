@@ -27,6 +27,10 @@ public class SeekerGun : MonoBehaviourPun
 	private float originSensitivity;
 
     public Transform firePoint;
+    //각 프리팹 접근 키 선언
+    public string localMuzzleKey = "LocalMuzzle";
+    public string localBulletKey = "LocalBullet";
+	public string localBulletHitKey = "LocalHit";
 
 
 	private void Start()
@@ -42,10 +46,17 @@ public class SeekerGun : MonoBehaviourPun
 
         chargeTimer = 0f;
         UIChanged = false;
+
+        //각 프리팹들을 pool에 삽입한다.
+        PoolManager.instance.CreatePool(localMuzzleKey, Resources.Load<GameObject>("LocalPrefabs/SmallEnergyMuzzle"), 5);
+		PoolManager.instance.CreatePool(localBulletKey, Resources.Load<GameObject>("LocalPrefabs/SmallEnergyBullet"), 5);
+		PoolManager.instance.CreatePool(localBulletHitKey, Resources.Load<GameObject>("LocalPrefabs/SmallEnergyBulletHit"), 5);
 	}
 
 	private void Update()
 	{
+        if (!photonView.IsMine) return;
+
         //만약 충전이 아직 안된경우
 		if (chargeTimer < chargeDelay)
 		{
@@ -78,25 +89,68 @@ public class SeekerGun : MonoBehaviourPun
             ZoomOut();
 	}
 
-    //총알 발사 함수
+	//총알 발사 함수
 	void Shoot()
     {
-        //충전이 아직 안된경우 발사를 막는다.
-        if (chargeTimer < chargeDelay) return;
+		//충전이 아직 안된경우 발사를 막는다.
+		if (chargeTimer < chargeDelay) return;
+
+        //로컬 환경에서(총 발사한 환경) 프리팹을 생성한다.
+		GameObject localMuzzle = PoolManager.instance.GetFromPool(localMuzzleKey, firePoint.position, firePoint.rotation);
+        GameObject localBullet = PoolManager.instance.GetFromPool(localBulletKey, firePoint.position, firePoint.rotation);
+        //각 프리펩에 달린 코드를 통해 처리를 진행한다.
+        localMuzzle.GetComponent<LocalMuzzle>().MuzzleInit();
+        localBullet.GetComponent<LocalBullet>().Init(seekerCam.transform.forward, range, localBulletHitKey);
+
+        //총 발사 효과
+        ApplyRecoil();
+
+        //그리고 총 발사 정보를 공유하기 위해 해당 RPC 함수를 호출한다.
+        //이때 MasterClient만 수행한다.
+        photonView.RPC("RPC_RequestShoot", RpcTarget.MasterClient, firePoint.position, seekerCam.transform.forward);
+
+		//충전 타이머 초기화
+		chargeTimer = 0;
+		Game_UIManager.instance.GunUIInit();
+		UIChanged = false;
+	}
+
+    //총 발사 효과 적용 함수
+    //추후에 수정 할 예정(현재는 단순히 카메라를 뒤로 조금 민다.)
+    void ApplyRecoil()
+    {
+        //shoot 플래그 활성화
+        CameraCollision.instance.shoot = true;
+
+        StartCoroutine(kickBack());
+    }
+
+    //일정 시간이 지난 후 shoot 플래그를 비활성화 하는 함수
+    IEnumerator kickBack()
+    {
+        yield return new WaitForSeconds(0.2f);
+        CameraCollision.instance.shoot = false;
+	}
+
+
+    //MasterClient가 처리하는 Shoot 함수
+    [PunRPC]
+	void RPC_RequestShoot(Vector3 firePosition, Vector3 fireDir)
+    {
+        if (!PhotonNetwork.IsMasterClient) return;
+
+        
         //Raycast 정의
         RaycastHit hit;
-        //seeker 카메라 기준으로, seeker가 바라보는 방향으로 Ray를 발사한다.
-        if(Physics.Raycast(seekerCam.transform.position, seekerCam.transform.forward, out hit, range))
+        Vector3 hitPoint = firePosition + fireDir * range;
+
+        //거점 전용 collider가 Ray에 감지되지 않기 위해서 다음 처리 진행
+		int layerMask = ~(1 << LayerMask.NameToLayer("Site"));
+		//seeker 카메라 기준으로, seeker가 바라보는 방향으로 Ray를 발사한다.
+		if (Physics.Raycast(firePosition, fireDir, out hit, range, layerMask))
         {
-            //총알 발사 이펙트 및 총알 이펙트를 네트워크 상에서 생성
-            GameObject muzzle = PhotonNetwork.Instantiate("SmallEnergyMuzzle", firePoint.position, seekerCam.transform.rotation);
-			GameObject bullet = PhotonNetwork.Instantiate("SmallEnergyBullet", firePoint.position, seekerCam.transform.rotation);
-			//각각 이펙트에 붙어있는 PhotonView를 가져온다.
-            PhotonView muzzlePV = muzzle.GetComponent<PhotonView>();
-			PhotonView bulletPV = bullet.GetComponent<PhotonView>();
-            //각 총알에 붙어있는 PhotonView가 모든 클라이언트에게 해당 함수들을 실행하라고 요청한다.
-			muzzlePV.RPC("RPC_Muzzle", RpcTarget.All);
-            bulletPV.RPC("RPC_MoveBullet", RpcTarget.All, hit.point);
+            //맞은 포인트 저장
+            hitPoint = hit.point;
 
             //만약 맞은 오브젝트의 태그가 Runner인 경우
             if (hit.transform.CompareTag("Runner"))
@@ -111,11 +165,6 @@ public class SeekerGun : MonoBehaviourPun
                         //호출 한다. 이때, 실행자는 맞은 Runner이다.
                     PMPV.RPC("GetDamagedBySeeker", PMPV.Owner, damageToRunnner);
                 }
-				//충전 타이머 초기화
-				chargeTimer = 0;
-				Game_UIManager.instance.GunUIInit();
-				UIChanged = false;
-				return;
             }
 
             //만약 맞은 오브젝트가 Dummy일 경우
@@ -128,13 +177,18 @@ public class SeekerGun : MonoBehaviourPun
                 //Seeker, 즉 자기 자신의 체력을 감소시키는 함수를 호출한다.
 				SeekerManager.Instance.GetDamagedOnDummy(damageToSeekerOnDummyHit);
             }
-			//충전 타이머 초기화
-			chargeTimer = 0;
-			Game_UIManager.instance.GunUIInit();
-			UIChanged = false;
-            return;
 		}
-    }
+
+		//총알 발사 이펙트 및 총알 이펙트를 네트워크 상에서 생성
+		GameObject muzzle = PhotonNetwork.Instantiate("SmallEnergyMuzzle",firePosition, Quaternion.LookRotation(fireDir));
+		GameObject bullet = PhotonNetwork.Instantiate("SmallEnergyBullet", firePosition, Quaternion.LookRotation(fireDir));
+		//각각 이펙트에 붙어있는 PhotonView를 가져온다.
+		PhotonView muzzlePV = muzzle.GetComponent<PhotonView>();
+		PhotonView bulletPV = bullet.GetComponent<PhotonView>();
+		//각 총알에 붙어있는 PhotonView가 모든 클라이언트에게 해당 함수들을 실행하라고 요청한다.
+		muzzlePV.RPC("RPC_Muzzle", RpcTarget.All);
+		bulletPV.RPC("RPC_MoveBullet", RpcTarget.All, hit.point);
+	}
 
     //줌인 함수
     void ZoomIn()

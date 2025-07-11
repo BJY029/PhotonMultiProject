@@ -884,6 +884,7 @@ MonoBehaviour:
   distance: 2
   zoomDistance: 3.5
   smoothSpeed: 10
+  currentDistance: 0
   collisionLayer:
     serializedVersion: 2
     m_Bits: 64

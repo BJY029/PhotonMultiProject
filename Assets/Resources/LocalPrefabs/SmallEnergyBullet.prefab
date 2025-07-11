@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1632702835481548453}
   - component: {fileID: 8615674140580831272}
   - component: {fileID: 8869927018396646872}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: CenterLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4981,7 +4981,7 @@ GameObject:
   - component: {fileID: 252161056237826991}
   - component: {fileID: 8577290819553867639}
   - component: {fileID: 3414125401938888190}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Trail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9893,7 +9893,7 @@ GameObject:
   - component: {fileID: 2715097750928793630}
   - component: {fileID: 9209911469449008956}
   - component: {fileID: 2851368206704824058}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Sparkle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14735,9 +14735,8 @@ GameObject:
   - component: {fileID: 5500589658238033461}
   - component: {fileID: 3625310122738156168}
   - component: {fileID: 3345262847822722968}
-  - component: {fileID: 2089420166003925219}
-  - component: {fileID: 8140426588153455323}
-  m_Layer: 9
+  - component: {fileID: -4676937309301294183}
+  m_Layer: 0
   m_Name: SmallEnergyBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19571,7 +19570,7 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!114 &2089420166003925219
+--- !u!114 &-4676937309301294183
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -19580,30 +19579,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 5673644444912649340}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents: []
-  sceneViewId: 0
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
---- !u!114 &8140426588153455323
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5673644444912649340}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4578595342a49af479ea5a77fa310b7a, type: 3}
+  m_Script: {fileID: 11500000, guid: 72cb10a358a86fb4184f4a721896fb1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   bulletSpeed: 150
-  impactEffectPrefab: {fileID: 8926623346772015102, guid: 1a7fdb3e608b6574087c42ebff474902, type: 3}
+  destroyTime: 1
