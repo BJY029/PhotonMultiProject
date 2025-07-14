@@ -1,7 +1,7 @@
 using Photon.Pun;
 using UnityEngine;
 
-public class SeekerManager : MonoBehaviour
+public class SeekerManager : MonoBehaviourPun
 {
 	//싱글턴
 	public static SeekerManager Instance;
@@ -26,16 +26,29 @@ public class SeekerManager : MonoBehaviour
 	}
 
 	//Dummy를 쏠 경우 호출되는 함수
+	[PunRPC]
 	public void GetDamagedOnDummy(float value)
 	{
 		//전달 받은 값에 의해서 체력이 감소된다.
 		CurrentHeart -= value;
-		if (CurrentHeart < 0)
+		if (CurrentHeart <= 0)
 		{
 			CurrentHeart = 0;
 			Debug.Log("Seeker가 자멸했습니다.");
 			Game_UIManager.instance.Hearts.value = CurrentHeart;
 			PhotonNetwork.Destroy(gameObject);
+		}
+		Game_UIManager.instance.Hearts.value = CurrentHeart;
+	}
+
+	//회복 함수
+	[PunRPC]
+	public void HealHearts(float value)
+	{
+		CurrentHeart += value;
+		if (CurrentHeart > HeartsMaxValue)
+		{
+			CurrentHeart = HeartsMaxValue;
 		}
 		Game_UIManager.instance.Hearts.value = CurrentHeart;
 	}

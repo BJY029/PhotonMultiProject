@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using Photon.Pun;   //Photon Networking용 네임 스페이스
 using System.Collections.Generic;
+using System.Collections;
+
 
 
 
@@ -26,6 +28,9 @@ namespace StarterAssets
 
         [Tooltip("Sprint speed of the character in m/s")]
         public float SprintSpeed = 5.335f; //달리기 속도
+        [SerializeField]
+        public float BoostSpeed = 10f;
+        public bool isBoost;
 
 		private float CurrentStamina;
 
@@ -201,6 +206,7 @@ namespace StarterAssets
             Game_UIManager.instance.Stamina.maxValue = StaminaMaxValue;
             Game_UIManager.instance.Stamina.value = StaminaMaxValue;
             CurrentStamina = StaminaMaxValue;
+            isBoost = false;
 		}
 
         private void Update()
@@ -286,9 +292,39 @@ namespace StarterAssets
             //즉 좌우 회전은 캐릭터 자체를 회전, 상하 회전은 카메라의 상하 회전을 통해 구현
         }
 
+        //현재 마나를 최대로 변경하는 함수
+        public void setCurrentStaminaToMax()
+        {
+            CurrentStamina = StaminaMaxValue;
+        }
 
-        //이동 관련 함수
-        private void Move()
+		//Booster를 처리하는 함수
+        //우선 Booster가 처리되고 있는 중이라면, Booster 아이템을 또 먹어도 해당 효과가 적용되지 않는다.
+		[PunRPC]
+		public void RPC_ApplyBoost(float duration)
+		{
+			if (isBoost) return;
+            //코루틴 호출
+			StartCoroutine(BoostRoutine(duration));
+		}
+
+		IEnumerator BoostRoutine(float time)
+		{
+            //Boost 플래그 활성화
+			isBoost = true;
+			setCurrentStaminaToMax();
+
+            //일정 시간 대기 후
+			yield return new WaitForSeconds(time);
+
+            //부스터 종료
+			isBoost = false;
+			Debug.Log($"Boost 끝났음 (isBoost: {isBoost})");
+		}
+
+
+		//이동 관련 함수
+		private void Move()
         {
 			//플레이어 컨트롤러의 x,z 축의 벡터의 크기, 즉 플레이어의 수평 속도를 구한다.
 			float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
@@ -297,6 +333,8 @@ namespace StarterAssets
 			bool isRunning = _input.sprint && currentHorizontalSpeed > 0.1f && CurrentStamina > minRunStamina;
             //isRunning flag에 따라서 목표 속도를 결정
             float targetSpeed = isRunning ? SprintSpeed : MoveSpeed;
+            //만약 부스터 중이라면 속도를 고정시킨다.
+            if(isBoost) targetSpeed = BoostSpeed;
 
             //현재 달리는 중이라면
             if (isRunning)

@@ -884,7 +884,7 @@ MonoBehaviour:
   distance: 2
   zoomDistance: 3.5
   smoothSpeed: 10
-  currentDistance: 0
+  shoot: 0
   collisionLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -1318,6 +1318,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MoveSpeed: 2
   SprintSpeed: 8
+  BoostSpeed: 10
+  isBoost: 0
   StaminaMaxValue: 100
   minRunStamina: 5
   staminaDecreaseRate: 15
@@ -2808,7 +2810,7 @@ GameObject:
   - component: {fileID: 3583423164127098235}
   - component: {fileID: 5990539345130279307}
   - component: {fileID: 7611806770489391567}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: FootStepSensor
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -144,8 +144,10 @@ public class SeekerGun : MonoBehaviourPun
         RaycastHit hit;
         Vector3 hitPoint = firePosition + fireDir * range;
 
-        //거점 전용 collider가 Ray에 감지되지 않기 위해서 다음 처리 진행
-		int layerMask = ~(1 << LayerMask.NameToLayer("Site"));
+		//거점 전용 collider가 Ray에 감지되지 않기 위해서 다음 처리 진행
+		int excludeMask = (1 << LayerMask.NameToLayer("Site")) | (1 << LayerMask.NameToLayer("Item"));
+		int layerMask = ~excludeMask;
+
 		//seeker 카메라 기준으로, seeker가 바라보는 방향으로 Ray를 발사한다.
 		if (Physics.Raycast(firePosition, fireDir, out hit, range, layerMask))
         {
@@ -174,8 +176,10 @@ public class SeekerGun : MonoBehaviourPun
                 var Dummy = hit.transform.GetComponent<PhotonView>();
                 //맞은 Dummy에 달린 DestroySelf 함수를 MasterClient가 실행하도록 한다.
 				Dummy.RPC("DestroySelf", RpcTarget.MasterClient);
-                //Seeker, 즉 자기 자신의 체력을 감소시키는 함수를 호출한다.
-				SeekerManager.Instance.GetDamagedOnDummy(damageToSeekerOnDummyHit);
+				//Seeker, 즉 자기 자신의 체력을 감소시키는 함수를 호출한다.
+				this.photonView.RPC("GetDamagedOnDummy", this.photonView.Owner, damageToSeekerOnDummyHit);
+                
+				//SeekerManager.Instance.GetDamagedOnDummy(damageToSeekerOnDummyHit);
             }
 		}
 

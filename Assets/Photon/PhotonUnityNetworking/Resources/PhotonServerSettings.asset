@@ -54,6 +54,11 @@ MonoBehaviour:
   - RPC_MoveBullet
   - RPC_Muzzle
   - RPC_RequestShoot
+  - InitItems
+  - RPC_PickUpItem
+  - HealHearts
+  - GetDamagedOnDummy
+  - RPC_ApplyBoost
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

@@ -49,5 +49,15 @@ public class RunnerManager : MonoBehaviourPun
 		Game_UIManager.instance.Hearts.value = CurrentHeart;
 	}
 
+	[PunRPC]
+	public void HealHearts(float value)
+	{
+		CurrentHeart += value;
+        if (CurrentHeart > HeartsMaxValue)
+        {
+			CurrentHeart = HeartsMaxValue;
+        }
+		Game_UIManager.instance.Hearts.value = CurrentHeart;
+	}
 
 }
