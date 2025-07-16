@@ -62,6 +62,19 @@ public class Game_UIManager : MonoBehaviourPun
 	[SerializeField]
 	private float seekerWaitingTime;
 
+
+	//깜빡이는 최소 주기
+	[SerializeField]
+	private float minBlinkingDuration = 0.1f;
+	//깜빡에는 최대 주기
+	[SerializeField]
+	private float maxBlinkingDuration = 1.0f;
+	//해당 코루틴에 사용할 시간 정보
+	private float elapsedTime;
+	//관련 플래그 및 UI
+	private bool isVisible;
+	public Graphic BoostUI;
+
 	private void Start()
 	{
 		//Seeker 전용 UI는 기본적으로 set false
@@ -73,6 +86,9 @@ public class Game_UIManager : MonoBehaviourPun
 		CapturedAlertUI.transform.localScale = Vector3.one;
 		CapturedAlertUI.SetActive(false);
 
+		//Boost UI를 초기화
+		isVisible = false;
+		BoostUI.enabled = false;
 
 		//해당 UI 오브젝트의 자식에 달려있는 오브젝트들을 array로 저장
 		Transform[] childTransforms = SiteStatusUI.GetComponentsInChildren<Transform>();
@@ -106,6 +122,38 @@ public class Game_UIManager : MonoBehaviourPun
 	public void setHeartSliderValue(float value)
 	{
 		Hearts.value = value;
+	}
+
+	//Boost 아이템을 먹으면 실행되는 함수
+	public void startBlinkUI(float time)
+	{
+		//깜빡이는 코루틴을 시작한다.
+		StartCoroutine(BlinkRoutine(time));
+	}
+
+	IEnumerator BlinkRoutine(float time)
+	{
+		elapsedTime = 0f;
+		//지정된 시간동안
+		while(elapsedTime < time)
+		{
+			//현재의 진행도를 구하고
+			float progress = elapsedTime / time;
+			//최대 깜빡임 주기와 최소 깜빡임 주기 사이의 진행도를 기반으로 현재 재생할 깜빡임 주기 값 구하기
+			float blinkInterval = Mathf.Lerp(maxBlinkingDuration, minBlinkingDuration, progress);
+
+			//보이는 여부를 반대로 하고
+			isVisible = !isVisible;
+			//해당 상태를 UI에 적용
+			BoostUI.enabled = isVisible;
+
+			//구해진 현재 깜빡임 주기만큼 대기 후
+			yield return new WaitForSeconds(blinkInterval);
+			//진행도에 깜빡임 주기를 더해서 적용
+			elapsedTime += blinkInterval;
+		}
+		//최종적으로 해당 UI 비활성화
+		BoostUI.enabled = false;
 	}
 
 	[PunRPC]//RPC로 호출하기 위해 선언된 함수

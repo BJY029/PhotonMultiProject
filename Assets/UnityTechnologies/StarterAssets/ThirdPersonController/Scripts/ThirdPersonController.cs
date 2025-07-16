@@ -313,6 +313,7 @@ namespace StarterAssets
             //Boost 플래그 활성화
 			isBoost = true;
 			setCurrentStaminaToMax();
+            Game_UIManager.instance.startBlinkUI(time);
 
             //일정 시간 대기 후
 			yield return new WaitForSeconds(time);
@@ -331,10 +332,12 @@ namespace StarterAssets
 
 			//달리기 버튼이 눌렸고, 현재 스테미너가 충분한 경우 달리기가 가능하도록 처리
 			bool isRunning = _input.sprint && currentHorizontalSpeed > 0.1f && CurrentStamina > minRunStamina;
-            //isRunning flag에 따라서 목표 속도를 결정
-            float targetSpeed = isRunning ? SprintSpeed : MoveSpeed;
-            //만약 부스터 중이라면 속도를 고정시킨다.
-            if(isBoost) targetSpeed = BoostSpeed;
+			//만약 부스터 중이라면 달리기 계수를 1.5배 시킨다.
+			float runningRate = 1f;
+            if (isBoost) runningRate = 1.5f;
+			//isRunning flag에 따라서 목표 속도를 결정
+			float targetSpeed = isRunning ? SprintSpeed * runningRate : MoveSpeed;
+            
 
             //현재 달리는 중이라면
             if (isRunning)
