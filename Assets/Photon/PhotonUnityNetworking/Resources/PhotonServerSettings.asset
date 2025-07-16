@@ -59,6 +59,12 @@ MonoBehaviour:
   - HealHearts
   - GetDamagedOnDummy
   - RPC_ApplyBoost
+  - AccessDenied
+  - AccessGranted
+  - ClearInput
+  - RPC_AccessDenied
+  - RPC_AccessGranted
+  - RPC_ClearInput
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

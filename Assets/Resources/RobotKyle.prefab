@@ -1231,6 +1231,7 @@ GameObject:
   - component: {fileID: 3631850974952536254}
   - component: {fileID: 9164447026878847670}
   - component: {fileID: 1031727511787347520}
+  - component: {fileID: 2568072500027313002}
   m_Layer: 0
   m_Name: RobotKyle
   m_TagString: Runner
@@ -1578,6 +1579,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HeartsMaxValue: 100
+--- !u!114 &2568072500027313002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2781643032218088300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19578acfdca3c2647acfd7ccc3cf8ec3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RayDistance: 5
+  cam: {fileID: 2419360534133847954}
+  interactableLayer:
+    serializedVersion: 2
+    m_Bits: 8192
 --- !u!1 &2932589739606657012
 GameObject:
   m_ObjectHideFlags: 0

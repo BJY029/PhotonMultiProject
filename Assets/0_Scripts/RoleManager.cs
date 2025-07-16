@@ -2,7 +2,9 @@ using Photon.Pun;
 using StarterAssets;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 //역할을 나타내는 Enum 선언
 public enum PlayerRoles
@@ -22,6 +24,8 @@ public class RoleManager : MonoBehaviour
 	}
 
 	public GameObject camera;
+
+    public List<Canvas> worldCanvases;
 
     //플레이어의 역할을 저장하는 객체
     private PlayerRoles myRole;
@@ -74,6 +78,7 @@ public class RoleManager : MonoBehaviour
         yield return new WaitUntil(() => !Game_UIManager.instance.isIniting);
         //controller를 다시 활성화해서 움직일 수 있도록 한다.
         PC.enabled = true;
+		Game_UIManager.instance.CrossHair.SetActive(true);
 	}
 
     //Seeker인 경우 수행되는 코루틴
@@ -115,6 +120,11 @@ public class RoleManager : MonoBehaviour
 		//랜덤한 위치에 플레이어 프리팹 생성
 		Vector3 spawnPosition = new Vector3(UnityEngine.Random.Range(-85.0f, -90f), 2.0f, UnityEngine.Random.Range(10.0f, 30.0f));
 		playerObj = PhotonNetwork.Instantiate("RobotKyle", spawnPosition, Quaternion.identity);
+        Camera cam = playerObj.GetComponent<Camera>();
+        foreach(Canvas canvas in worldCanvases)
+        {
+            canvas.worldCamera = cam;
+        }
 		//씬에는 카메라가 하나는 존재해야 하며, Audio Listener가 하나 존재해야 하기 때문에, 기본 카메라를 설정해 놓고
 		//플레이어 하나 이상이 들어온 경우, 기본 카메라를 비활성화 시킨다.
 		if (camera != null) camera.SetActive(false);

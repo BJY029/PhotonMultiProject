@@ -8,6 +8,7 @@ TagManager:
   - Dummy
   - Runner
   - Seeker
+  - Interactable
   layers:
   - Default
   - TransparentFX
@@ -22,8 +23,8 @@ TagManager:
   - Site
   - Item
   - FootStepSensor
-  - 
-  - 
+  - interactable
+  - KeyPadButton
   - 
   - 
   - 
