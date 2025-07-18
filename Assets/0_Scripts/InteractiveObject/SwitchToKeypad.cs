@@ -4,13 +4,7 @@ using UnityEngine;
 
 public class SwitchToKeypad : MonoBehaviourPun
 {
-	//싱글턴화
-	public static SwitchToKeypad instance;
 
-	private void Awake()
-	{
-		if(instance == null) instance = this;
-	}
 
 	//KeyPad와 상호작용 중인 플레이어 오브젝트를 저장
 	private GameObject player;

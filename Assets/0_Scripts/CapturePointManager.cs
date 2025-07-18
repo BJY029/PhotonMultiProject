@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using System;
 
 public class CapturePointManager : MonoBehaviourPun
 {
@@ -12,10 +13,20 @@ public class CapturePointManager : MonoBehaviourPun
 	//점령된 거점을 저장하는 리스트
 	public List<CapturePoint> Captured = new List<CapturePoint>();
 
+
+	private int keyCodeValue;
+
 	private void Awake()
 	{
 		if (Instance == null) Instance = this;
 	}
+
+	private void Start()
+	{
+
+	}
+
+
 
 	//각 거점을 리스트에 삽입하는 함수
 	public void RegisterPoint(CapturePoint point)
@@ -52,6 +63,9 @@ public class CapturePointManager : MonoBehaviourPun
 				photonView.RPC("DeactiveSite", RpcTarget.All, capturePoint.pointName);
 			}
 
+			//모든 클라이언트들이 키패드와 상호작용 할 수 있게 해당 함수를 RPC로 호출
+			KeyPadManager.Instance.photonView.RPC("ActiveKeyPads", RpcTarget.All);
+
 			//PhotonNetwork에서 PlayerList를 받아온다.
 			foreach (Player player in PhotonNetwork.PlayerList)
 			{
@@ -62,8 +76,8 @@ public class CapturePointManager : MonoBehaviourPun
 					string role = (string)player.CustomProperties["Role"];
 					if (role == "Runner") //Runner이면
 					{
-						//표시할 텍스트
-						string str = "Destroy the generator and kill the Seeker.";
+						//표시할 텍스트, Runner의 경우 키패드 번호도 표시해준다.
+						string str = "Destroy the generator and kill the Seeker. \nKeyCode : " + KeyPadManager.Instance.getKeyCodeValue();
 						//해당 텍스트 색상 값을 Vector2 2개로 표현한다.
 						Vector2 colorVec1 = new Vector2(0f, 1f); // r=0, g=1
 						Vector2 colorVec2 = new Vector2(0f, 1f); // b=0, a=1

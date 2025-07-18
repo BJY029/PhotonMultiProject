@@ -114,6 +114,11 @@ public class RoleManager : MonoBehaviour
         return PlayerRoles.None;
     }
 
+    public GameObject getPlayerObj()
+    {
+        return playerObj;
+    }
+
 	//플레이어를 생성하는 함수
 	void SpawnRunner()
 	{

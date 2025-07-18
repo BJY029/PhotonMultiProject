@@ -55,6 +55,10 @@ namespace NavKeypad
 			panelMesh.material.SetVector("_EmissionColor", screenNormalColor * screenIntensity);
         }
 
+        public void setKeypadCombo(int value)
+        {
+            keypadCombo = value;
+        }
 
         //특정 입력이 발생되었을 때 호출될 함수
         //Gets value from pressedbutton

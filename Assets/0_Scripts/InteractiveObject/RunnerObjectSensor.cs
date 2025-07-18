@@ -1,7 +1,10 @@
+using Photon.Pun;
 using UnityEngine;
 
-public class RunnerObjectSensor : MonoBehaviour
+public class RunnerObjectSensor : MonoBehaviourPun
 {
+
+
 	//발사할 Ray 거리
 	[SerializeField]
 	private float RayDistance = 10f;
@@ -26,8 +29,21 @@ public class RunnerObjectSensor : MonoBehaviour
 
 	private void Update()
 	{
+		if (!photonView.IsMine) return;
+
+		// 자동 상호작용 종료 감지
+		if (hasTriggeredInteraction && currentTarget != null)
+		{
+			var switchKeypad = currentTarget.GetComponent<SwitchToKeypad>();
+			if (switchKeypad != null && !switchKeypad.isInteraction)
+			{
+				hasTriggeredInteraction = false; // 다시 상호작용 가능
+				InitCurrentCanvas(); // Ray가 다시 닿도록 초기화
+			}
+		}
+
 		//만약 현재 상호작용 중인 경우, Ray 발사를 중지한다.
-		if (SwitchToKeypad.instance.isInteraction)
+		if (hasTriggeredInteraction)
 		{
 			HideCurrentCanvas();
 			return;
@@ -48,6 +64,7 @@ public class RunnerObjectSensor : MonoBehaviour
 			{
 				//현재 재생중인 캔버스를 초기화 후
 				HideCurrentCanvas();
+				InitCurrentCanvas();
 				//새롭게 캔버스를 설정한다.
 				currentTarget = hitObject;
 				currentCanvas = currentTarget.GetComponentInChildren<Canvas>(true);
@@ -57,21 +74,24 @@ public class RunnerObjectSensor : MonoBehaviour
 			//키 E가 눌렸고, 목표 오브젝트가 존재하며, 상호작용 중이 아니라면!
 			if (Input.GetKeyDown(KeyCode.E) && currentTarget != null && !hasTriggeredInteraction)
 			{
+
 				//상호작용 플래그를 재설정하고
 				hasTriggeredInteraction = true; // 중복 방지
-				
+
 				//해당 키패드에 붙어있는 KeyPad의 스크립트의 Mod_KeyPad를 호출한다.
 				//해당 스크립트 부분은, 추후에 다른 상호작용 오브젝트가 생길 경우 손봐야 할 필요가 있다.
 
 				currentTarget.GetComponent<SwitchToKeypad>().Mode_KeyPad(cam, gameObject);
 
 				Debug.Log("Mode_KeyPad");
+
 			}
 		}
 		else
 		{
 			//감지된 Layer가 없으면 초기화
 			HideCurrentCanvas();
+			InitCurrentCanvas();
 			hasTriggeredInteraction = false; // 감지 해제 시 다시 허용
 		}
 	}
@@ -82,8 +102,12 @@ public class RunnerObjectSensor : MonoBehaviour
 		if(currentCanvas != null)
 		{
 			currentCanvas.gameObject.SetActive(false);
-			currentCanvas = null;
-			currentTarget = null;
 		}
+	}
+
+	void InitCurrentCanvas()
+	{
+		currentCanvas = null;
+		currentTarget = null;
 	}
 }

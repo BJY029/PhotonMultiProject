@@ -12,11 +12,13 @@ namespace NavKeypad
 		private LayerMask keypadButtonLayer;
 
 		public Camera cam; //사용할 카메라
-		
+
+		public GameObject parentKeyPad;
+
 		private void Update()
 		{
 			//상호작용 중이 아니라면 Ray를 감지하지 않는다.
-			if (!SwitchToKeypad.instance.isInteraction) return;
+			if (!parentKeyPad.GetComponent<SwitchToKeypad>().isInteraction) return;
 			//카메라 방향으로 Ray를 발사한다.
 			var ray = cam.ScreenPointToRay(Input.mousePosition);
 			//디버깅 용 Ray를 그리는 함수
