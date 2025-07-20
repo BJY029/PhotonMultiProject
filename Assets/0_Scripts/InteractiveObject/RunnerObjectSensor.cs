@@ -30,7 +30,6 @@ public class RunnerObjectSensor : MonoBehaviourPun
 	private void Update()
 	{
 		if (!photonView.IsMine) return;
-
 		// 자동 상호작용 종료 감지
 		if (hasTriggeredInteraction && currentTarget != null)
 		{
@@ -74,17 +73,27 @@ public class RunnerObjectSensor : MonoBehaviourPun
 			//키 E가 눌렸고, 목표 오브젝트가 존재하며, 상호작용 중이 아니라면!
 			if (Input.GetKeyDown(KeyCode.E) && currentTarget != null && !hasTriggeredInteraction)
 			{
+				//만약 Ray한 오브젝트가 KeyPad인 경우
+				if (currentTarget.CompareTag("KeyPad"))
+				{
+					//상호작용 플래그를 재설정하고
+					hasTriggeredInteraction = true; // 중복 방지
 
-				//상호작용 플래그를 재설정하고
-				hasTriggeredInteraction = true; // 중복 방지
+					//해당 키패드에 붙어있는 KeyPad의 스크립트의 Mod_KeyPad를 호출한다.
+					//해당 스크립트 부분은, 추후에 다른 상호작용 오브젝트가 생길 경우 손봐야 할 필요가 있다.
 
-				//해당 키패드에 붙어있는 KeyPad의 스크립트의 Mod_KeyPad를 호출한다.
-				//해당 스크립트 부분은, 추후에 다른 상호작용 오브젝트가 생길 경우 손봐야 할 필요가 있다.
+					currentTarget.GetComponent<SwitchToKeypad>().Mode_KeyPad(cam, gameObject);
 
-				currentTarget.GetComponent<SwitchToKeypad>().Mode_KeyPad(cam, gameObject);
-
-				Debug.Log("Mode_KeyPad");
-
+					Debug.Log("Mode_KeyPad");
+				}
+				//Ray의 오브젝트가 Labtop인 경우
+				else if (currentTarget.CompareTag("Labtop"))
+				{
+					//해당 오브젝트의 PhotonView를 불러와서
+					PhotonView pv = currentTarget.GetComponent<PhotonView>();
+					//해당 PhotonView가 모든 클라이언트를 대상으로 해당 함수를 실행하도록 한다.
+					pv.RPC("ChangeToTurnoffMat", RpcTarget.All);
+				}
 			}
 		}
 		else
@@ -94,6 +103,7 @@ public class RunnerObjectSensor : MonoBehaviourPun
 			InitCurrentCanvas();
 			hasTriggeredInteraction = false; // 감지 해제 시 다시 허용
 		}
+
 	}
 
 	//캔버스를 초기화 하는 함수

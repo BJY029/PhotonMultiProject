@@ -9,6 +9,9 @@ TagManager:
   - Runner
   - Seeker
   - Interactable
+  - bullet
+  - KeyPad
+  - Labtop
   layers:
   - Default
   - TransparentFX
