@@ -14,7 +14,7 @@ public enum PlayerRoles
     None
 }
 
-public class RoleManager : MonoBehaviour
+public class RoleManager : MonoBehaviourPun
 {
     public static RoleManager instance;
 

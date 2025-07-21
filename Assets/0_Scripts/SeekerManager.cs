@@ -1,5 +1,6 @@
 using Photon.Pun;
 using UnityEngine;
+using System.Collections;
 
 public class SeekerManager : MonoBehaviourPun
 {
@@ -8,7 +9,30 @@ public class SeekerManager : MonoBehaviourPun
 
 	private void Awake()
 	{
-		if(Instance == null) Instance = this;
+		if (Instance == null) Instance = this;
+
+		if (!photonView.IsMine) return;
+		photonView.RPC(nameof(OnRegister), RpcTarget.AllBuffered, photonView.ViewID);
+	}
+
+	[PunRPC]
+	public void OnRegister(int viewID)
+	{
+		PhotonView view = PhotonView.Find(viewID);
+		if (view != null && !PlayerTracker.instance.GetAlivePlayers().Contains(view.Owner))
+		{
+			PlayerTracker.instance.Register(view.Owner, view.gameObject);
+		}
+	}
+
+	[PunRPC]
+	public void OnUnregister(int viewID)
+	{
+		PhotonView view = PhotonView.Find(viewID);
+		if (view != null)
+		{
+			PlayerTracker.instance.Unregister(view.Owner);
+		}
 	}
 
 	//Seeker 체력
@@ -36,7 +60,9 @@ public class SeekerManager : MonoBehaviourPun
 			CurrentHeart = 0;
 			Debug.Log("Seeker가 자멸했습니다.");
 			Game_UIManager.instance.Hearts.value = CurrentHeart;
-			PhotonNetwork.Destroy(gameObject);
+
+			photonView.RPC(nameof(OnUnregister), RpcTarget.AllBuffered, photonView.ViewID);
+			StartCoroutine(DestroyAfterDelay(0.1f));
 		}
 		Game_UIManager.instance.Hearts.value = CurrentHeart;
 	}
@@ -51,5 +77,11 @@ public class SeekerManager : MonoBehaviourPun
 			CurrentHeart = HeartsMaxValue;
 		}
 		Game_UIManager.instance.Hearts.value = CurrentHeart;
+	}
+
+	IEnumerator DestroyAfterDelay(float delay)
+	{
+		yield return new WaitForSeconds(delay);
+		PhotonNetwork.Destroy(gameObject);
 	}
 }

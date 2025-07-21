@@ -19,6 +19,7 @@ public class Game_UIManager : MonoBehaviourPun
 		if(instance == null) instance = this;
 	}
 
+	public GameObject UICanvas;
 	public GameObject CrossHair;
 	//거점 상태 정보를 알려주는 UI
 	public GameObject SiteStatusUI;
@@ -49,6 +50,8 @@ public class Game_UIManager : MonoBehaviourPun
 
 	public Slider Hearts;
 	public Slider Stamina;
+
+	public GameObject DeadText;
 
 	//각종 flag들
     public bool isTyping;

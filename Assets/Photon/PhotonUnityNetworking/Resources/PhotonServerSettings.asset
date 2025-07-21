@@ -68,6 +68,8 @@ MonoBehaviour:
   - ActiveKeyPads
   - InitKeyPads
   - ChangeToTurnoffMat
+  - OnRegister
+  - OnUnregister
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

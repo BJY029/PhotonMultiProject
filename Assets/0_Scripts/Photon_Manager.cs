@@ -1,10 +1,21 @@
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
+using System.Collections.Generic;
+using NUnit.Framework;
 
 public class Photon_Manager : MonoBehaviourPunCallbacks
 {
     private string gameVersion = "1";
+	
+	public static Photon_Manager instance;
+
+	public List<Player> alivePlayers = new List<Player> ();
+
+	private void Awake()
+	{
+		if(instance == null)instance = this;
+	}
 
 	private void Start()
 	{

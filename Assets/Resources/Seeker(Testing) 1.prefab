@@ -716,7 +716,7 @@ MonoBehaviour:
   distance: 2
   zoomDistance: 1
   smoothSpeed: 10
-  currentDistance: 0
+  shoot: 0
   collisionLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -793,8 +793,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4325474356768659098}
-  - {fileID: 4150333712354894454}
   - {fileID: 74078943140093413}
+  - {fileID: 4150333712354894454}
   - {fileID: 2428350293170302240}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -925,6 +925,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MoveSpeed: 2
   SprintSpeed: 8
+  BoostSpeed: 10
+  isBoost: 0
   StaminaMaxValue: 100
   minRunStamina: 5
   staminaDecreaseRate: 15
