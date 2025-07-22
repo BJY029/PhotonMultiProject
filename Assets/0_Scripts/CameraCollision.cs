@@ -26,6 +26,8 @@ public class CameraCollision : MonoBehaviour
 	//확대 여부 flag
 	public bool zoom;
 
+	public Vector3 finalCameraPos;
+
 	private void Start()
 	{
 		zoom = false;
@@ -55,7 +57,7 @@ public class CameraCollision : MonoBehaviour
 		//최종 카메라 거리 계산
 		//충돌체가 없다면 기존과 같은 위치
 		//충돌치게 있으면, 그에 맞게 계산된 RayDistance 만큼 카메라가 떨어져서 존재
-		Vector3 finalCameraPos = player.position - player.forward * rayDistance + Vector3.up * 2f;
+		finalCameraPos = player.position - player.forward * rayDistance + Vector3.up * 2f;
 		//최종 카메라 위치 변경
 		//기존 카메라에서 새롭게 갱신된 카메라 위치를 부드럽게 전환하기 위해 Lerp 사용
 		transform.position = Vector3.Lerp(transform.position, finalCameraPos, Time.deltaTime * smoothSpeed);

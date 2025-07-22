@@ -435,9 +435,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 9041895132851422231}
   - {fileID: 5693573482122812598}
   - {fileID: 3252631230519043381}
-  - {fileID: 9041895132851422231}
   - {fileID: 1963589990596968064}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1104,6 +1104,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   zoom: 0
+  finalCameraPos: {x: 0, y: 0, z: 0}
 --- !u!1 &2931319310070912328
 GameObject:
   m_ObjectHideFlags: 0

@@ -23,7 +23,7 @@ public class SpectatorManager : MonoBehaviour
 	//플레이어 정보
 	private Player currentTargetPlayer;
 	private GameObject currentTargetObject;
-	//private Camera currentTargetCamera;
+	private Camera currentTargetCamera;
 
 	//관련 카메라 정보
 	private float SmoothSpeed = 10f;
@@ -76,6 +76,7 @@ public class SpectatorManager : MonoBehaviour
 			currentIdx = 0;
 			currentTargetPlayer = alivePlayers[currentIdx];
 			currentTargetObject = PlayerTracker.instance.GetPlayerObject(currentTargetPlayer);
+			currentTargetCamera = currentTargetObject.GetComponentInChildren<Camera>(true);
 		}
 	}
 
@@ -106,23 +107,20 @@ public class SpectatorManager : MonoBehaviour
 		}
 
 		//만약 대상 오브젝트가 없는 경우
-		if(currentTargetObject == null)
+		if(currentTargetCamera == null)
 		{
 			//다시 시도해보고
 			ChangeTarget();
 			//그래도 없으면 return
-			if (currentTargetObject == null)
+			if (currentTargetCamera == null)
 			{
 				return;
 			}
 		}
 
-		//수정 필요!!!!
-		Vector3 targetPos = currentTargetObject.transform.position + offset;
-		Quaternion offsetRot = Quaternion.Euler(rot);
-		Quaternion targetRot = currentTargetObject.transform.rotation * offsetRot;
-		transform.position = Vector3.Lerp(transform.position, targetPos, Time.deltaTime * SmoothSpeed);
-		transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * SmoothSpeed);
+		
+		transform.position = Vector3.Lerp(transform.position, currentTargetCamera.transform.position, Time.deltaTime * SmoothSpeed);
+		transform.rotation = Quaternion.Slerp(transform.rotation, currentTargetCamera.transform.rotation, Time.deltaTime * SmoothSpeed);
 
 		//왼쪽 혹은 오른쪽 화살표가 눌리면 모듈러 연산을 통해 리스트의 인덱스를 변경해서
 		//목표 타깃을 변경한다.
@@ -138,10 +136,21 @@ public class SpectatorManager : MonoBehaviour
 		}
 	}
 
-	//타깃을 현재 인덱스에 따라 변경해주는 함수
+	////타깃을 현재 인덱스에 따라 변경해주는 함수
+	//private void ChangeTarget()
+	//{
+	//	currentTargetPlayer = alivePlayers[currentIdx];
+	//	currentTargetObject = PlayerTracker.instance.GetPlayerObject(currentTargetPlayer);
+	//	Camera currentCam = currentTargetObject.GetComponentInChildren<Camera>();
+	//	if (currentCam == null) Debug.LogError("cannot find cam..");
+	//	else Debug.LogError("find cam");
+	//}
+
 	private void ChangeTarget()
 	{
 		currentTargetPlayer = alivePlayers[currentIdx];
 		currentTargetObject = PlayerTracker.instance.GetPlayerObject(currentTargetPlayer);
+		currentTargetCamera = currentTargetObject.GetComponentInChildren<Camera>(true);
 	}
+
 }

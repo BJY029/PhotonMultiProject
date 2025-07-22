@@ -889,6 +889,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   zoom: 0
+  finalCameraPos: {x: 0, y: 0, z: 0}
 --- !u!1 &2257950284461399962
 GameObject:
   m_ObjectHideFlags: 0
