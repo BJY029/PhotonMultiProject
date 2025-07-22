@@ -3,6 +3,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Collections.Generic;
 using NUnit.Framework;
+using Photon.Pun.Demo.Asteroids;
 
 public class Photon_Manager : MonoBehaviourPunCallbacks
 {
@@ -45,5 +46,12 @@ public class Photon_Manager : MonoBehaviourPunCallbacks
 			//내 앱을 끈다.
 			Application.Quit();
 		}
+	}
+
+	//플레이어가 나갔을 때 모든 클라이언트에서 호출되는 함수
+	public override void OnPlayerLeftRoom(Player otherPlayer)
+	{
+		//해당 플레이어를 Unregister 한다.
+		PlayerTracker.instance.Unregister(otherPlayer);
 	}
 }

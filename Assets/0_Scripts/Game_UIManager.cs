@@ -52,6 +52,7 @@ public class Game_UIManager : MonoBehaviourPun
 	public Slider Stamina;
 
 	public GameObject DeadText;
+	public GameObject specText;
 
 	//°¢Á¾ flagµé
     public bool isTyping;
