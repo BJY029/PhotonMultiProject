@@ -53,6 +53,7 @@ public class Game_UIManager : MonoBehaviourPun
 
 	public GameObject DeadText;
 	public GameObject specText;
+	public GameObject Minimap;
 
 	//°¢Á¾ flagµé
     public bool isTyping;

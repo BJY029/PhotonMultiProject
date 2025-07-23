@@ -18,6 +18,7 @@ public class RunnerManager : MonoBehaviourPun
 		photonView.RPC(nameof(OnRegister), RpcTarget.AllBuffered, photonView.ViewID);
 	}
 
+
 	//플레이어 생성 시 호출되는 RPC 함수
 	[PunRPC]
 	public void OnRegister(int viewID)
@@ -76,6 +77,7 @@ public class RunnerManager : MonoBehaviourPun
 			{
 				//관련 UI를 비활성화 하고
 				Game_UIManager.instance.UICanvas.SetActive(false);
+				Game_UIManager.instance.Minimap.SetActive(false);
 				//해당 플레이어의 카메라와 움직임 또한 제한한다.
 				ThirdPersonController TPC =GetComponent<ThirdPersonController>();
 				TPC._mainCamera.SetActive(false);

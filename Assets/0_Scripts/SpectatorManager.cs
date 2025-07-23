@@ -108,7 +108,7 @@ public class SpectatorManager : MonoBehaviour
 		if (alivePlayers.Count == 0)
 		{
 			RefreshAlivePlayers();
-			Debug.LogError("List empty");
+			//Debug.LogError("List empty");
 			return;
 		}
 

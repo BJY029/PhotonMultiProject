@@ -60,6 +60,7 @@ public class SeekerManager : MonoBehaviourPun
 			CurrentHeart = 0;
 			Debug.Log("Seeker가 자멸했습니다.");
 			Game_UIManager.instance.Hearts.value = CurrentHeart;
+			Game_UIManager.instance.Minimap.SetActive(false);
 
 			photonView.RPC(nameof(OnUnregister), RpcTarget.AllBuffered, photonView.ViewID);
 			StartCoroutine(DestroyAfterDelay(0.1f));

@@ -28,8 +28,8 @@ TagManager:
   - FootStepSensor
   - interactable
   - KeyPadButton
-  - 
-  - 
+  - RunnerIcon
+  - SeekerIcon
   - 
   - 
   - 
