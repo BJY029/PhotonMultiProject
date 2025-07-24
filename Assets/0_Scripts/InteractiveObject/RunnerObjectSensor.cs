@@ -93,6 +93,8 @@ public class RunnerObjectSensor : MonoBehaviourPun
 					PhotonView pv = currentTarget.GetComponent<PhotonView>();
 					//해당 PhotonView가 모든 클라이언트를 대상으로 해당 함수를 실행하도록 한다.
 					pv.RPC("ChangeToTurnoffMat", RpcTarget.All);
+					//그리고, 모든 노트북이 꺼졌는지 확인한다.
+					GameResultManager.instance.photonView.RPC("CheckLabtop", RpcTarget.MasterClient);
 				}
 			}
 		}

@@ -9,12 +9,19 @@ public class SwitchLabtop : MonoBehaviourPun
 	private BoxCollider m_BoxCollider;
 	//상호작용시 적용될 머테리얼
     public Material turnoffMat;
+	//노트북 꺼짐 여부를 체크하는 플래그
+	public bool checkFlag;
 
 	public void Start()
 	{
 		//초기화
 		m_MeshRenderer = GetComponent<MeshRenderer>();
 		m_BoxCollider = GetComponent<BoxCollider>();
+
+		if (PhotonNetwork.IsMasterClient)
+		{
+			checkFlag = false;
+		}
 	}
 
 	//RPC로 실행시켜서 모든 플레이어에게 적용되도록 한다.
@@ -25,5 +32,10 @@ public class SwitchLabtop : MonoBehaviourPun
 		m_MeshRenderer.material = turnoffMat;
 		//Boxcollider를 꺼서 상호작용이 불가하도록 한다.
 		m_BoxCollider.enabled = false;
+		//MasterClient만 해당 노트북이 꺼진것을 체크한다.
+		if(PhotonNetwork.IsMasterClient)
+		{
+			checkFlag = true;
+		}
 	}
 }

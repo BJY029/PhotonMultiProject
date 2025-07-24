@@ -15,6 +15,7 @@ public class KeyPadManager : MonoBehaviourPun
 
 	//거점 점령이 완료되면 횔성화 할 KeyPad 코드를 관리하기 위해 리스트 선언
 	public List<GameObject> KeyPads = new List<GameObject>();
+
 	//로컬 플레이어
 	private GameObject player;
 	//해당 로컬 플레이어의 역할 정보

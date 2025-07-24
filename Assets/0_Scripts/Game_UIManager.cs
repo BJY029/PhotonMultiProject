@@ -54,6 +54,7 @@ public class Game_UIManager : MonoBehaviourPun
 	public GameObject DeadText;
 	public GameObject specText;
 	public GameObject Minimap;
+	public GameObject GameOverUI;
 
 	//각종 flag들
     public bool isTyping;
@@ -104,6 +105,13 @@ public class Game_UIManager : MonoBehaviourPun
 		}
 	}
 	
+	public void GameOver()
+	{
+		GameOverUI.SetActive(true);
+		Animator animator = GameOverUI.GetComponent<Animator>();
+		animator.Play("ShowGameOver");
+	}
+
 	//총 충전도를 0으로 초기화 시키는 함수
 	public void GunUIInit()
 	{
