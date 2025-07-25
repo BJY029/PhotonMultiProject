@@ -1,3 +1,4 @@
+using Photon.Pun;
 using Photon.Realtime;
 using System;
 using System.Collections.Generic;
@@ -43,6 +44,12 @@ public class PlayerTracker : MonoBehaviour
 			playerObjects.Remove(player);
 			//이벤트가 등록되어 있을 경우 해당 이벤트를 invoke 한다.
 			OnAlivePlayersChanged?.Invoke();
+
+			//MasterClient의 경우, 게임 종료 여부를 확인한다.
+			if (PhotonNetwork.IsMasterClient)
+			{
+				CheckGameOver();
+			}
 		}
 		Debug.Log(playerObjects.Count);
 	}
@@ -60,5 +67,25 @@ public class PlayerTracker : MonoBehaviour
 	public List<Player> GetAlivePlayers()
 	{
 		return playerObjects.Keys.ToList();
+	}
+
+	//게임 종료 확인
+	public void CheckGameOver()
+	{
+		//해당 딕셔너리에 한명의 플레이어만 저장되어 있고
+		if(playerObjects.Count == 1)
+		{
+			//해당 딕셔너리의 Player 객체를 받아온 후
+			Player lastPlayer = playerObjects.First().Key;
+			//그 Player의 커스텀 프로퍼티에 저장된 역할이
+			if(lastPlayer.CustomProperties.TryGetValue("Role", out object role)){
+				//Seeker인 경우, Seeker가 최종 생존자
+				if(role.ToString() == "Seeker")
+				{
+					//따라서, 게임을 종료하고 Seeker로 게임 우승을 처리한다.
+					GameResultManager.instance.photonView.RPC("EndGame", RpcTarget.All, "Seeker");
+				}
+			}
+		}
 	}
 }

@@ -100,8 +100,9 @@ public class RoleManager : MonoBehaviourPun
         PC.enabled = true;
         Game_UIManager.instance.CrossHair.SetActive(true);
         Game_UIManager.instance.GunChargeUI.SetActive(true);
+        //타이머 재생
+        TimeManager.instance.photonView.RPC("SetTimer", RpcTarget.MasterClient);
 	}
-
 
 
     //내 역할이 무엇인지 찾아서 반환하는 함수

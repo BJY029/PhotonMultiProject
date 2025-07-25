@@ -83,6 +83,8 @@ public class SeekerManager : MonoBehaviourPun
 	IEnumerator DestroyAfterDelay(float delay)
 	{
 		yield return new WaitForSeconds(delay);
-		PhotonNetwork.Destroy(gameObject);
+		gameObject.GetComponent<RagdollController>().OnDeath();
+		GameResultManager.instance.photonView.RPC("EndGame", RpcTarget.All, "Runner");
+		//PhotonNetwork.Destroy(gameObject);
 	}
 }

@@ -32,23 +32,15 @@ public class GameResultManager : MonoBehaviourPun
 		{
 			if (!labtop.checkFlag) return;
 		}
-		//만약 모든 노트북이 꺼졌으면
-		//CustonProperties에 Winner 정보를 저장한다.
-		var props = new ExitGames.Client.Photon.Hashtable
-			{
-				{ "Winner", "Runner" }
-			};
-
-		//로컬 플레이어릐 CustomProperties를 서버에 업데이트 한다.
-		PhotonNetwork.CurrentRoom.SetCustomProperties(props);
+		
 
 		//그리고, EndGame 함수를 모든 클라이언트에게 실행하라고 명령한다.
-		photonView.RPC("EndGame", RpcTarget.All);
+		photonView.RPC("EndGame", RpcTarget.All, "Runner");
 	}
 
 	//게임이 종료되면 실행되는 함수
 	[PunRPC]
-	void EndGame()
+	void EndGame(string Winner)
 	{
 		//관련 UI를 재생하고
 		Game_UIManager.instance.GameOver();
@@ -58,6 +50,16 @@ public class GameResultManager : MonoBehaviourPun
 		//MasterClient는 해당 코루틴을 실행시킨다.
 		if(PhotonNetwork.IsMasterClient)
 		{
+			//만약 모든 노트북이 꺼졌으면
+			//CustonProperties에 Winner 정보를 저장한다.
+			var props = new ExitGames.Client.Photon.Hashtable
+			{
+				{ "Winner", Winner }
+			};
+
+			//로컬 플레이어릐 CustomProperties를 서버에 업데이트 한다.
+			PhotonNetwork.CurrentRoom.SetCustomProperties(props);
+
 			StartCoroutine(EndGameC());
 		}
 	}
