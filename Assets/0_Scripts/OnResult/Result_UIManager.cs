@@ -61,6 +61,13 @@ public class Result_UIManager : MonoBehaviourPun
         photonView.RPC(nameof(initPlayerProperties), RpcTarget.All);
         //그리고 대기 룸 자체에 저장된 정보를 초기화 시킨다.
         InitCustomProperties();
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.CurrentRoom.IsOpen = true;
+			PhotonNetwork.CurrentRoom.IsVisible = true;
+            PhotonNetwork.DestroyAll();
+		}
         //그리고 대기 룸으로 이동한다.
         PhotonNetwork.LoadLevel("RoomScene");
     }

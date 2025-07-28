@@ -76,6 +76,7 @@ MonoBehaviour:
   - ActiveTimer
   - SetTimer
   - StartAllTimer
+  - ForceLeaveRoom
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

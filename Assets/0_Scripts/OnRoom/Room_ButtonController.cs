@@ -34,6 +34,9 @@ public class Room_ButtonController : MonoBehaviour
         //MasterClient만 역할을 부여한다.
         if (!PhotonNetwork.IsMasterClient) return;
 
+        PhotonNetwork.CurrentRoom.IsOpen = false;
+        PhotonNetwork.CurrentRoom.IsVisible = false;
+
         //플레이어 리스트를 받아온다.
         var players = PhotonNetwork.PlayerList.ToList();
         //해당 플레이어들을 랜덤으로 섞는다.

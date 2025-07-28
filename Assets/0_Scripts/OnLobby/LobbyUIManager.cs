@@ -23,6 +23,7 @@ public class LobbyUIManager : MonoBehaviour
 	public GameObject Warning_Create;
 	public GameObject Warning_MaxPlayer;
 	public GameObject Warning_NullPass;
+	public GameObject Warning_MasterClientLeave;
 
 	public InputField RoomName;
 	public InputField Password;
@@ -41,6 +42,17 @@ public class LobbyUIManager : MonoBehaviour
 		CreateRoomFrame.gameObject.SetActive(false);
 		JoinRoomFrame.gameObject.SetActive(false);
 		PassWordFrame.gameObject.SetActive(false);
+
+		//강제 추방된 경우
+		if (SceneStateManager.instance.ForcedToLeaveRoom)
+		{
+			Warning_MasterClientLeave.SetActive(true);
+			SceneStateManager.instance.ForcedToLeaveRoom = false;
+		}
+		else
+		{
+			Warning_MasterClientLeave.SetActive(false);
+		}
 	}
 
 	//Create 버튼이 눌린경우, 다음 함수가 실행된다.
