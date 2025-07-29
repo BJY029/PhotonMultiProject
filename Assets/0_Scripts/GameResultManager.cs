@@ -8,6 +8,7 @@ public class GameResultManager : MonoBehaviourPun
 {
 	//싱글턴화
     public static GameResultManager instance;
+	private bool isEnding = false;
 
 	private void Awake()
 	{
@@ -42,13 +43,16 @@ public class GameResultManager : MonoBehaviourPun
 	[PunRPC]
 	void EndGame(string Winner)
 	{
+		if(isEnding) return;
+		isEnding = true;
+
 		//관련 UI를 재생하고
 		Game_UIManager.instance.GameOver();
 		//시간 속도를 0.1배로 변경
 		Time.timeScale = 0.1f;
 
 		//MasterClient는 해당 코루틴을 실행시킨다.
-		if(PhotonNetwork.IsMasterClient)
+		if(PhotonNetwork.IsMasterClient && PhotonNetwork.InRoom)
 		{
 			//만약 모든 노트북이 꺼졌으면
 			//CustonProperties에 Winner 정보를 저장한다.

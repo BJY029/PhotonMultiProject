@@ -80,7 +80,8 @@ public class Result_UIManager : MonoBehaviourPun
 		var playerProps = new ExitGames.Client.Photon.Hashtable
 		{
 			{"Role", null},
-			{"IsReady", false }
+			{"IsReady", false },
+			{"IsMaster", false }
 		};
 		PhotonNetwork.LocalPlayer.SetCustomProperties(playerProps);
 	}
@@ -92,6 +93,7 @@ public class Result_UIManager : MonoBehaviourPun
         var resetProps = new ExitGames.Client.Photon.Hashtable
         {
             {"Winner", null },
+            {"StartTime", null }
         };
         PhotonNetwork.CurrentRoom.SetCustomProperties(resetProps);
 	}

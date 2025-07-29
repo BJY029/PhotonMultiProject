@@ -20,4 +20,6 @@ public class SceneStateManager : MonoBehaviour
 
 	//강제로 방이 떠나졌는지 확인하는 플래그
 	public bool ForcedToLeaveRoom = false;
+
+
 }

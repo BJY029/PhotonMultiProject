@@ -1,8 +1,10 @@
 using Photon.Pun;
+using Photon.Realtime;
 using StarterAssets;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -40,8 +42,9 @@ public class RoleManager : MonoBehaviourPun
 
 	private void Start()
 	{
-        //먼저 내 역할이 무엇인지 확인한다.
-        myRole = GetMyRole();
+
+		//먼저 내 역할이 무엇인지 확인한다.
+		myRole = GetMyRole();
 
         //역할에 따라 수행되는 코드가 결정된다.
         switch (myRole)
@@ -75,6 +78,7 @@ public class RoleManager : MonoBehaviourPun
                 Debug.LogWarning("No Roles! ERROR!");
                 break;
         }
+                IsMasterClient();
 	}
 
     //Runner인 경우 수행되는 코루틴
@@ -127,6 +131,17 @@ public class RoleManager : MonoBehaviourPun
     {
         return playerObj;
     }
+
+    private void IsMasterClient()
+    {
+		var props = new ExitGames.Client.Photon.Hashtable
+			{
+				{"IsMaster", PhotonNetwork.IsMasterClient}
+			};
+
+		//로컬 플레이어릐 CustomProperties를 서버에 업데이트 한다.
+		PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+	}
 
 	//플레이어를 생성하는 함수
 	void SpawnRunner()

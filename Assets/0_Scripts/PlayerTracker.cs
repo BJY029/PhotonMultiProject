@@ -52,6 +52,7 @@ public class PlayerTracker : MonoBehaviour
 			}
 		}
 		Debug.Log(playerObjects.Count);
+		Debug.Log($"[Unregister] Player: {player.NickName}");
 	}
 
 	//플레이어의 Key를 기반으로 해당 플레이어 오브젝트를 반환해주는 함수
@@ -72,6 +73,7 @@ public class PlayerTracker : MonoBehaviour
 	//게임 종료 확인
 	public void CheckGameOver()
 	{
+		if (!PhotonNetwork.InRoom) return;
 		//해당 딕셔너리에 한명의 플레이어만 저장되어 있고
 		if(playerObjects.Count == 1)
 		{
@@ -84,6 +86,10 @@ public class PlayerTracker : MonoBehaviour
 				{
 					//따라서, 게임을 종료하고 Seeker로 게임 우승을 처리한다.
 					GameResultManager.instance.photonView.RPC("EndGame", RpcTarget.All, "Seeker");
+				}
+				else if(role.ToString() == "Runner")
+				{
+					GameResultManager.instance.photonView.RPC("EndGame", RpcTarget.All, "Runner");
 				}
 			}
 		}
