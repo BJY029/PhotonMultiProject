@@ -19,6 +19,11 @@ public class LobbyUIManager : MonoBehaviour
 	public GameObject CreateRoomFrame;
 	public GameObject JoinRoomFrame;
 	public GameObject PassWordFrame;
+	public GameObject SettingsFrame;
+
+	public Slider BGMSlider;
+	public Slider SFXSlider;
+	public Toggle MUTE;
 
 	public GameObject Warning_Create;
 	public GameObject Warning_MaxPlayer;
@@ -38,6 +43,7 @@ public class LobbyUIManager : MonoBehaviour
 		CreateRoomFrame.transform.localScale = Vector3.one;
 		JoinRoomFrame.transform.localScale = Vector3.one;
 		PassWordFrame.transform.localScale= Vector3.one;
+		SettingsFrame.transform.localScale = Vector3.zero;
 		//그리고 비활성화한다.
 		CreateRoomFrame.gameObject.SetActive(false);
 		JoinRoomFrame.gameObject.SetActive(false);
@@ -92,6 +98,60 @@ public class LobbyUIManager : MonoBehaviour
 			PassWordFrame.SetActive(false);
 		}
     }
+
+	//설정창 열기 버튼이 눌리면 실행될 함수
+	public void OnClickedSettingsBtn()
+	{
+		//각 볼륨 크기를 받아와서 슬라이더 value에 적용시켜준다.
+		BGMSlider.value = GetVolume(AudioMixerType.BGM);
+		SFXSlider.value = GetVolume(AudioMixerType.SFX);
+		//설정창을 띄운다.(크기를 1로 설정한다.)
+		SettingsFrame.transform.localScale = Vector3.one;
+	}
+
+	//설정창 나가기 버튼이 눌리면 실행될 함수
+	public void OnExitSettings()
+	{
+		SettingsFrame.transform.localScale = Vector3.zero;
+	}
+
+	//BGM 슬라이더에 연결될 함수
+	public void OnBGMSliderChanged()
+	{
+		AudioManager.instance.SetAudioVolume(AudioMixerType.BGM, BGMSlider.value);
+	}
+
+	//SFX 슬라이더에 연결될 함수
+	public void OnSFXSliderChanged()
+	{
+		AudioManager.instance.SetAudioVolume(AudioMixerType.SFX, SFXSlider.value);
+	}
+
+	//Mute Toggle에 연결될 함수
+	public void MuteToggle()
+	{
+		if (MUTE.isOn)
+		{
+			AudioManager.instance.SetAudioVolume(AudioMixerType.Master, -80f);
+		}
+		else
+		{
+			AudioManager.instance.SetAudioVolume(AudioMixerType.Master, 0f);
+		}
+	}
+
+	//특정 오디오 타입의 볼륨 값을 가져오는 함수(이는 AudioManager의 함수를 그대로 가져온 것)
+	//즉 딱히 필요없는 함수
+	public float GetVolume(AudioMixerType mixerType)
+	{
+		float value;
+		if(AudioManager.instance.audioMixer.GetFloat(mixerType.ToString(), out value))
+		{
+			return Mathf.Pow(10f, value / 20f);
+		}
+		Debug.LogError("Can't find Volume mixer Type : " + mixerType.ToString());
+		return 1f;
+	}
 
 	public void OnRefreshRooms()
 	{

@@ -27,6 +27,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 		//서버 접속 시도
 		Connect();
 		statusText.text = "Connection to server...";
+
+		AudioManager.instance.PlayLobbyBgm(AudioManager.instance.GetVolume(AudioMixerType.BGM));
 	}
 
 	public void Connect()
