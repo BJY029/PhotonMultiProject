@@ -83,6 +83,7 @@ public class Game_UIManager : MonoBehaviourPun
 
 	private void Start()
 	{
+		AudioManager.instance.InitBGMSoruce();
 		//Seeker 전용 UI는 기본적으로 set false
 		//해당 UI는 RoleManager에서 Seeker 코루틴이 끝난 후 true로 설정된다.
 		CrossHair.SetActive(false);
@@ -227,6 +228,8 @@ public class Game_UIManager : MonoBehaviourPun
 		Desc.text = "";
 		Timer.text = "";
 
+		AudioManager.instance.PlayStartGameIntro();
+
 		//Runner임을 알리는 텍스트를 타이핑 형식으로 작성해나가는 함수 호출
 		//인자로 사용된 색상 값은 hex 값을 string 형식으로 넘겨주며, 자동 변환을 해주는 함수를 사용함
 		StartCoroutine(TypeSentence("Runner", ColorToHex(Color.green)));
@@ -254,6 +257,8 @@ public class Game_UIManager : MonoBehaviourPun
 		Desc.text = "";
 		Timer.text = "";
 
+		AudioManager.instance.PlayStartGameIntro();
+
 		//Seeker임을 알리는 텍스트를 타이핑 형식으로 작성해나가는 함수 호출
 		//인자로 사용된 색상 값은 hex 값을 string 형식으로 넘겨주며, 자동 변환을 해주는 함수를 사용함
 		StartCoroutine(TypeSentence("Seeker", ColorToHex(Color.red)));
@@ -269,7 +274,12 @@ public class Game_UIManager : MonoBehaviourPun
 		//아래 코드를 통해 타이머를 재생한다.
 		while(remaining >= 0)
 		{
-			if(remaining <= 10) Timer.color = Color.red;
+			if (remaining <= 10)
+			{
+				if(Timer.color != Color.red) 
+					Timer.color = Color.red;
+				AudioManager.instance.PlayRandomTickSound();
+			}
 			Timer.text = $"{remaining:F0}";
 			yield return new WaitForSeconds(1f);
 			remaining -= 1f;

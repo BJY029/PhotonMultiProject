@@ -19240,7 +19240,7 @@ MonoBehaviour:
   isIniting: 0
   typingSpeed: 0.1
   waitingTime: 3
-  seekerWaitingTime: 1
+  seekerWaitingTime: 30
   minBlinkingDuration: 0.1
   maxBlinkingDuration: 1
   BoostUI: {fileID: 541945370}

@@ -1406,7 +1406,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 2845449.2}
+  m_AnchoredPosition: {x: 0, y: 2905737}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &376834191
@@ -4418,6 +4418,12 @@ MonoBehaviour:
   ReadyBgmClip: {fileID: 8300000, guid: f0c10474d3211d342a4d8d5a5d372fff, type: 3}
   GameBgmClip: {fileID: 0}
   ResultBgmClip: []
+  StartGameClip: {fileID: 8300000, guid: 6d5ad94ee676d934099e7be56be99cec, type: 3}
+  ClockTickingClips:
+  - {fileID: 8300000, guid: 542f8976a786bdd439dfea1d722d603f, type: 3}
+  - {fileID: 8300000, guid: b0397d4fac855cb409c1d5648bd388d2, type: 3}
+  - {fileID: 8300000, guid: 650df9dd611e93f4dac1b251f378e3b4, type: 3}
+  - {fileID: 8300000, guid: 7ef4835715b3e16418455f5de0a1a937, type: 3}
   IsMute: 0
 --- !u!4 &1072136859
 Transform:

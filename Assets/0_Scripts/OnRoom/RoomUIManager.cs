@@ -22,6 +22,7 @@ public class RoomUIManager : MonoBehaviourPunCallbacks
 	public Button StartBtn;
 	public Button ReadyBtn;
 
+	//Setting에 사용될 UI
 	public Button GearBtn;
 	public GameObject SettingsFrame;
 	public Slider BGMSlider;
@@ -104,8 +105,10 @@ public class RoomUIManager : MonoBehaviourPunCallbacks
 		RefreshPlayerList();
 	}
 
+	//플레이어가 방을 떠날 때 실행될 함수
 	public override void OnLeftRoom()
 	{
+		//로비 씬으로 가도록 설정
 		SceneManager.LoadScene("LobbyScene");
 	}
 
@@ -159,13 +162,15 @@ public class RoomUIManager : MonoBehaviourPunCallbacks
 		//각 볼륨 크기를 받아와서 슬라이더 value에 적용시켜준다.
 		BGMSlider.value = AudioManager.instance.GetVolume(AudioMixerType.BGM);
 		SFXSlider.value = AudioManager.instance.GetVolume(AudioMixerType.SFX);
-
+		//현재 Mute 여부에 따라서 Trigger 여부를 설정한다.
 		if (AudioManager.instance.IsMute) MUTE.isOn = true;
 		else MUTE.isOn = false;
 
 		//설정창을 띄운다.(크기를 1로 설정한다.)
 		SettingsFrame.transform.localScale = Vector3.one;
+		//설정차이 띄워지면 뒷 배경의 버튼 클릭을 막는다.
 		GearBtn.interactable = false;
+		//StartBtn이 활성화된 경우에만 비활성화시킨다.
 		if(StartBtn.gameObject.activeSelf)
 			StartBtn.interactable = false;
 		ReadyBtn.interactable = false;
@@ -174,7 +179,9 @@ public class RoomUIManager : MonoBehaviourPunCallbacks
 	//설정창 나가기 버튼이 눌리면 실행될 함수
 	public void OnExitSettings()
 	{
+		//다시 설정창을 없애고
 		SettingsFrame.transform.localScale = Vector3.zero;
+		//버튼들을 활성화시킨다.
 		GearBtn.interactable = true;
 		if (StartBtn.gameObject.activeSelf)
 			StartBtn.interactable = true;
@@ -208,10 +215,9 @@ public class RoomUIManager : MonoBehaviourPunCallbacks
 		}
 	}
 
+	//로비로 돌아가기 버튼에 적용될 함수
 	public void BackToLobby()
 	{
 		PhotonNetwork.LeaveRoom();
 	}
-
-	
 }

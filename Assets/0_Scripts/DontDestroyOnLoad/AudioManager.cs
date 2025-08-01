@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -39,9 +40,13 @@ public class AudioManager : MonoBehaviour
 	public AudioClip GameBgmClip;
 	public AudioClip[] ResultBgmClip;
 
+	[Header("----SFXClips----")]
+	public AudioClip StartGameClip;
+	public AudioClip[] ClockTickingClips;
+
 	public bool IsMute = false;
 
-	
+
 	//특정 오디오 믹서 타입의 볼륨을 정해진 값으로 설정하는 함수
 	public void SetAudioVolume(AudioMixerType type, float volume)
 	{
@@ -60,6 +65,12 @@ public class AudioManager : MonoBehaviour
 		return 1f;
 	}
 
+	public void InitBGMSoruce()
+	{
+		bgmSoruce.Stop();
+		bgmSoruce.clip = null;
+	}
+
 	//로비 BGM을 재생하는 함수
 	public void PlayLobbyBgm(float Volume = 1.0f)
 	{
@@ -68,10 +79,22 @@ public class AudioManager : MonoBehaviour
 		bgmSoruce.Play();
 	}
 
+	//룸 BGM을 재생하는 함수
 	public void PlayReadyBgm(float Volume = 1.0f)
 	{
 		bgmSoruce.clip = ReadyBgmClip;
 		SetAudioVolume(AudioMixerType.BGM, Volume);
 		bgmSoruce.Play();
+	}
+
+	public void PlayStartGameIntro()
+	{
+		sfxSource.PlayOneShot(StartGameClip);
+	}
+
+	public void PlayRandomTickSound()
+	{
+		int idx = UnityEngine.Random.Range(0, ClockTickingClips.Length);
+		sfxSource.PlayOneShot(ClockTickingClips[idx]);
 	}
 }
