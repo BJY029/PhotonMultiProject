@@ -1,10 +1,12 @@
-using System.Collections.Generic;
-using UnityEngine;
-using Photon.Realtime;
-using Photon.Pun;
 using ExitGames.Client.Photon;
-using UnityEngine.UI;
+using Photon.Pun;
+using Photon.Realtime;
 using System;
+using System.Collections.Generic;
+using UnityEditor.Analytics;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class RoomUIManager : MonoBehaviourPunCallbacks
 {
@@ -18,6 +20,13 @@ public class RoomUIManager : MonoBehaviourPunCallbacks
 
 	//시작 버튼
 	public Button StartBtn;
+	public Button ReadyBtn;
+
+	public Button GearBtn;
+	public GameObject SettingsFrame;
+	public Slider BGMSlider;
+	public Slider SFXSlider;
+	public Toggle MUTE;
 
 
 	private void Start()
@@ -31,6 +40,8 @@ public class RoomUIManager : MonoBehaviourPunCallbacks
 			StartBtn.interactable = false;
 		}
 		else StartBtn.gameObject.SetActive(false);
+
+		SettingsFrame.transform.localScale = Vector3.zero;
 
 		RefreshPlayerList();
 	}
@@ -93,6 +104,11 @@ public class RoomUIManager : MonoBehaviourPunCallbacks
 		RefreshPlayerList();
 	}
 
+	public override void OnLeftRoom()
+	{
+		SceneManager.LoadScene("LobbyScene");
+	}
+
 	//플레이어가 방에서 나간 경우, 호출되는 콜백 함수
 	public override void OnPlayerLeftRoom(Player otherPlayer)
 	{
@@ -136,4 +152,66 @@ public class RoomUIManager : MonoBehaviourPunCallbacks
 			else StartBtn.interactable = false;
 		}
 	}
+
+	//설정창 열기 버튼이 눌리면 실행될 함수
+	public void OnClickedSettingsBtn()
+	{
+		//각 볼륨 크기를 받아와서 슬라이더 value에 적용시켜준다.
+		BGMSlider.value = AudioManager.instance.GetVolume(AudioMixerType.BGM);
+		SFXSlider.value = AudioManager.instance.GetVolume(AudioMixerType.SFX);
+
+		if (AudioManager.instance.IsMute) MUTE.isOn = true;
+		else MUTE.isOn = false;
+
+		//설정창을 띄운다.(크기를 1로 설정한다.)
+		SettingsFrame.transform.localScale = Vector3.one;
+		GearBtn.interactable = false;
+		if(StartBtn.gameObject.activeSelf)
+			StartBtn.interactable = false;
+		ReadyBtn.interactable = false;
+	}
+
+	//설정창 나가기 버튼이 눌리면 실행될 함수
+	public void OnExitSettings()
+	{
+		SettingsFrame.transform.localScale = Vector3.zero;
+		GearBtn.interactable = true;
+		if (StartBtn.gameObject.activeSelf)
+			StartBtn.interactable = true;
+		ReadyBtn.interactable= true;
+	}
+
+	//BGM 슬라이더에 연결될 함수
+	public void OnBGMSliderChanged()
+	{
+		AudioManager.instance.SetAudioVolume(AudioMixerType.BGM, BGMSlider.value);
+	}
+
+	//SFX 슬라이더에 연결될 함수
+	public void OnSFXSliderChanged()
+	{
+		AudioManager.instance.SetAudioVolume(AudioMixerType.SFX, SFXSlider.value);
+	}
+
+	//Mute Toggle에 연결될 함수
+	public void MuteToggle()
+	{
+		if (MUTE.isOn)
+		{
+			AudioManager.instance.SetAudioVolume(AudioMixerType.Master, -80f);
+			AudioManager.instance.IsMute = true;
+		}
+		else
+		{
+			AudioManager.instance.SetAudioVolume(AudioMixerType.Master, 0f);
+			AudioManager.instance.IsMute = false;
+		}
+	}
+
+	public void BackToLobby()
+	{
+		PhotonNetwork.LeaveRoom();
+	}
+
+	
 }

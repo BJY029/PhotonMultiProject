@@ -3,6 +3,7 @@ using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
+
 using WebSocketSharp;
 
 public class LobbyUIManager : MonoBehaviour
@@ -15,6 +16,12 @@ public class LobbyUIManager : MonoBehaviour
 	{
 		if(Instance == null) Instance = this;
 	}
+
+	public InputField NicknameField;
+	public Button SettingsBtn;
+	public Button JoinRoomBtn;
+	public Button CreateRoomBtn;
+	public Button ExitBtn;
 
 	public GameObject CreateRoomFrame;
 	public GameObject JoinRoomFrame;
@@ -105,6 +112,16 @@ public class LobbyUIManager : MonoBehaviour
 		//각 볼륨 크기를 받아와서 슬라이더 value에 적용시켜준다.
 		BGMSlider.value = GetVolume(AudioMixerType.BGM);
 		SFXSlider.value = GetVolume(AudioMixerType.SFX);
+
+		if (AudioManager.instance.IsMute) MUTE.isOn = true;
+		else MUTE.isOn = false;
+
+		NicknameField.interactable = false;
+		SettingsBtn.interactable = false;
+		JoinRoomBtn.interactable = false;
+		CreateRoomBtn.interactable = false;
+		ExitBtn.interactable = false;
+
 		//설정창을 띄운다.(크기를 1로 설정한다.)
 		SettingsFrame.transform.localScale = Vector3.one;
 	}
@@ -112,6 +129,12 @@ public class LobbyUIManager : MonoBehaviour
 	//설정창 나가기 버튼이 눌리면 실행될 함수
 	public void OnExitSettings()
 	{
+		NicknameField.interactable = true;
+		SettingsBtn.interactable = true;
+		JoinRoomBtn.interactable = true;
+		CreateRoomBtn.interactable = true;
+		ExitBtn.interactable = true;
+
 		SettingsFrame.transform.localScale = Vector3.zero;
 	}
 
@@ -133,10 +156,12 @@ public class LobbyUIManager : MonoBehaviour
 		if (MUTE.isOn)
 		{
 			AudioManager.instance.SetAudioVolume(AudioMixerType.Master, -80f);
+			AudioManager.instance.IsMute = true;
 		}
 		else
 		{
 			AudioManager.instance.SetAudioVolume(AudioMixerType.Master, 0f);
+			AudioManager.instance.IsMute = false;
 		}
 	}
 

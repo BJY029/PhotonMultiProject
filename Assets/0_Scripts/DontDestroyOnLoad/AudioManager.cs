@@ -39,6 +39,8 @@ public class AudioManager : MonoBehaviour
 	public AudioClip GameBgmClip;
 	public AudioClip[] ResultBgmClip;
 
+	public bool IsMute = false;
+
 	
 	//특정 오디오 믹서 타입의 볼륨을 정해진 값으로 설정하는 함수
 	public void SetAudioVolume(AudioMixerType type, float volume)
@@ -66,4 +68,10 @@ public class AudioManager : MonoBehaviour
 		bgmSoruce.Play();
 	}
 
+	public void PlayReadyBgm(float Volume = 1.0f)
+	{
+		bgmSoruce.clip = ReadyBgmClip;
+		SetAudioVolume(AudioMixerType.BGM, Volume);
+		bgmSoruce.Play();
+	}
 }
