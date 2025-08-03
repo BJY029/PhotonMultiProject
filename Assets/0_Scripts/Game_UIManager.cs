@@ -177,6 +177,8 @@ public class Game_UIManager : MonoBehaviourPun
 		Color TextColor = new Color(colorVec1.x, colorVec1.y, colorVec2.x, colorVec2.y);
 		//코루틴을 수행한다.
 		StartCoroutine(Game_UIManager.instance.AlertAllPointCaptured(str, TextColor));
+
+		AudioManager.instance.PlayChaseBGMWithFade(AudioManager.instance.GetVolume(AudioMixerType.BGM));
 	}
 
 	//특정 거점이 점령되었다는 UI가 종료된 후에, 해당 UI를 띄우도록 하기 위해 다음과 같이 딜레이를 준다.
@@ -246,6 +248,7 @@ public class Game_UIManager : MonoBehaviourPun
 		PanelAnim.Play("RoleClose");
 		//코루틴이 종료되었음을 알린다.
 		isIniting = false;
+		AudioManager.instance.PlayGameMainBGM(AudioManager.instance.GetVolume(AudioMixerType.BGM));
 	}
 
 	//Seeker UI 설정을 담당하는 코루틴
@@ -288,6 +291,8 @@ public class Game_UIManager : MonoBehaviourPun
 		PanelAnim.Play("RoleClose");
 		//코루틴이 끝났음을 알린다.
 		isIniting = false;
+
+		AudioManager.instance.PlayGameMainBGM(AudioManager.instance.GetVolume(AudioMixerType.BGM));
 	}
 
 	//타이핑을 담당하는 함수

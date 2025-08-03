@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -38,13 +39,16 @@ public class AudioManager : MonoBehaviour
 	public AudioClip LobbyBgmClip;
 	public AudioClip ReadyBgmClip;
 	public AudioClip GameBgmClip;
-	public AudioClip[] ResultBgmClip;
+	public AudioClip GameChaseBgmClip;
+	public AudioClip ResultBgmClip;
+
 
 	[Header("----SFXClips----")]
 	public AudioClip StartGameClip;
 	public AudioClip[] ClockTickingClips;
 
 	public bool IsMute = false;
+	private float fadeinDuration = 3f;
 
 
 	//특정 오디오 믹서 타입의 볼륨을 정해진 값으로 설정하는 함수
@@ -87,6 +91,48 @@ public class AudioManager : MonoBehaviour
 		bgmSoruce.Play();
 	}
 
+
+	public void PlayGameMainBGM(float Volume = 1.0f)
+	{
+		bgmSoruce.clip = GameBgmClip;
+		SetAudioVolume(AudioMixerType.BGM, Volume);
+		bgmSoruce.Play();
+	}
+
+	public void PlayChaseBGMWithFade(float Volume = 1.0f)
+	{
+		bgmSoruce.clip = GameChaseBgmClip;
+		StartCoroutine(FadeIn(bgmSoruce, fadeinDuration));
+	}
+
+	//페이드인 효과를 주는 코루틴
+	//코루틴 효과가 AudioMiexer에 영향을 주면 안되기 때문에,
+	//AudioSource 자제의 소리를 조정하여 페이드인 효과를 준다.
+	IEnumerator FadeIn(AudioSource audioSource, float duration)
+	{
+		float currentTime = 0f;
+		float startVolume = 0f;
+
+		audioSource.volume = 0f;
+		audioSource.Play();
+
+		while(currentTime < duration)
+		{
+			currentTime += Time.unscaledDeltaTime;
+			audioSource.volume = Mathf.Lerp(startVolume, 1f, currentTime/duration);
+			yield return null;
+		}
+
+		audioSource.volume = 1f;
+	}
+
+	public void PlayResultBGM(float Volume = 1.0f)
+	{
+		bgmSoruce.clip = ResultBgmClip;
+		SetAudioVolume(AudioMixerType.BGM, Volume);
+		bgmSoruce.Play();
+	}
+
 	public void PlayStartGameIntro()
 	{
 		sfxSource.PlayOneShot(StartGameClip);
@@ -97,4 +143,5 @@ public class AudioManager : MonoBehaviour
 		int idx = UnityEngine.Random.Range(0, ClockTickingClips.Length);
 		sfxSource.PlayOneShot(ClockTickingClips[idx]);
 	}
+
 }

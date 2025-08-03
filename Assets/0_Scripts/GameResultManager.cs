@@ -48,6 +48,7 @@ public class GameResultManager : MonoBehaviourPun
 
 		//관련 UI를 재생하고
 		Game_UIManager.instance.GameOver();
+		AudioManager.instance.PlayResultBGM(AudioManager.instance.GetVolume(AudioMixerType.BGM));
 		//시간 속도를 0.1배로 변경
 		Time.timeScale = 0.1f;
 

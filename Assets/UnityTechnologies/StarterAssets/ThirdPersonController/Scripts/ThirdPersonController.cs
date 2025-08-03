@@ -298,6 +298,16 @@ namespace StarterAssets
             CurrentStamina = StaminaMaxValue;
         }
 
+        public float getSensitivity()
+        {
+            return Sensitivity;
+        }
+
+        public void setSensitivity(float value)
+        {
+            Sensitivity = value;
+        }
+
 		//Booster를 처리하는 함수
         //우선 Booster가 처리되고 있는 중이라면, Booster 아이템을 또 먹어도 해당 효과가 적용되지 않는다.
 		[PunRPC]
@@ -582,11 +592,13 @@ namespace StarterAssets
 
 		//Animation Event를 통해 자동 호출되는 함수
 		//이벤트가 발생할 때 AnimationEvent 객체가 전달되어, 현재 애니메이션 상태의 가중치(weight) 등을 확인
-		private void OnLand(AnimationEvent animationEvent)
+		public void OnLand(AnimationEvent animationEvent)
         {
 			//현재 애니메이션 클립이 Blend 상태에서 충분히 우선순위가 높을 때만 실행
 			//weight가 1.0에 가까울수록 해당 클립이 확실히 재생되고 있다는 의미다.
 			//따라서 0.5 이상이면 발소리를 재생한다.
+			//Debug.LogWarning($"[OnLand] Clip Weight: {animationEvent.animatorClipInfo.weight}");
+
 			if (animationEvent.animatorClipInfo.weight > 0.5f)
             {
                 if (PlayerSensor.Instance.IsDummyInRange(gameObject))
@@ -596,5 +608,23 @@ namespace StarterAssets
                 }
             }
         }
-    }
+
+		//Animation Event를 통해 자동 호출되는 함수
+		//이벤트가 발생할 때 AnimationEvent 객체가 전달되어, 현재 애니메이션 상태의 가중치(weight) 등을 확인
+		private void OnLandSeeker(AnimationEvent animationEvent)
+		{
+			//현재 애니메이션 클립이 Blend 상태에서 충분히 우선순위가 높을 때만 실행
+			//weight가 1.0에 가까울수록 해당 클립이 확실히 재생되고 있다는 의미다.
+			//따라서 0.5 이상이면 발소리를 재생한다.
+			Debug.LogWarning($"[OnLand] Clip Weight: {animationEvent.animatorClipInfo.weight}");
+
+
+			if (PlayerSensor.Instance.IsDummyInRange(gameObject))
+			{
+					//착지음을 캐릭터 위치에서 재생
+				AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
+			}
+			
+		}
+	}
 }
