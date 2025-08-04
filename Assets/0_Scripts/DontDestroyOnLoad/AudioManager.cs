@@ -28,11 +28,12 @@ public class AudioManager : MonoBehaviour
 	//오디오 믹서
 	[Header("----Mixer----")]
 	public AudioMixer audioMixer;
+	public AudioMixerGroup audioMixerGroup;
 
 	//BGM과 SFX를 재생할 소스
 	[Header("----Sources----")]
 	public AudioSource bgmSoruce;
-	public AudioSource sfxSource;
+	public AudioSource[] sfxSource;
 
 	//사용될 각 클립들(아직 오디오 소스를 구하는 중)
 	[Header("----BgmClips----")]
@@ -46,6 +47,8 @@ public class AudioManager : MonoBehaviour
 	[Header("----SFXClips----")]
 	public AudioClip StartGameClip;
 	public AudioClip[] ClockTickingClips;
+	public AudioClip GunShotClip;
+	public AudioClip HoverClip;
 
 	public bool IsMute = false;
 	private float fadeinDuration = 3f;
@@ -135,13 +138,37 @@ public class AudioManager : MonoBehaviour
 
 	public void PlayStartGameIntro()
 	{
-		sfxSource.PlayOneShot(StartGameClip);
+		AudioSource audioSource = GetAvailableAudioSource();
+		audioSource.PlayOneShot(StartGameClip);
 	}
 
 	public void PlayRandomTickSound()
 	{
 		int idx = UnityEngine.Random.Range(0, ClockTickingClips.Length);
-		sfxSource.PlayOneShot(ClockTickingClips[idx]);
+
+		AudioSource audioSource = GetAvailableAudioSource();
+		audioSource.PlayOneShot(ClockTickingClips[idx]);
 	}
 
+	public void PlayGunShot()
+	{
+		AudioSource audioSource = GetAvailableAudioSource();
+		audioSource.PlayOneShot(GunShotClip);
+	}
+
+	public void PlayHoverClip()
+	{
+		AudioSource audioSource = GetAvailableAudioSource();
+		audioSource.PlayOneShot(HoverClip);
+	}
+
+	public AudioSource GetAvailableAudioSource()
+	{
+		foreach(var src in sfxSource)
+		{
+			if (!src.isPlaying)
+				return src;
+		}
+		return null;
+	}
 }

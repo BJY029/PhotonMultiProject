@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using Photon.Pun;
 using StarterAssets;
 using System.Collections;
+using UnityEngine.Audio;
 public class SeekerGun : MonoBehaviourPun
 {
     //Seeker에 부착된 카메라로, 해당 카메라를 기준으로 Ray를 쏜다.
@@ -19,6 +20,7 @@ public class SeekerGun : MonoBehaviourPun
     private float chargeTimer;
     //UI가 반복적으로 변경되는 것을 막기 위한 플래그
     private bool UIChanged;
+
 
 
     //Seeker에 붙은 Controller를 저장하기
@@ -94,6 +96,8 @@ public class SeekerGun : MonoBehaviourPun
     {
 		//충전이 아직 안된경우 발사를 막는다.
 		if (chargeTimer < chargeDelay) return;
+
+        photonView.RPC("RPC_PlayGunShot", RpcTarget.All, transform.position);
 
         //로컬 환경에서(총 발사한 환경) 프리팹을 생성한다.
 		GameObject localMuzzle = PoolManager.instance.GetFromPool(localMuzzleKey, firePoint.position, firePoint.rotation);
@@ -194,8 +198,25 @@ public class SeekerGun : MonoBehaviourPun
 		bulletPV.RPC("RPC_MoveBullet", RpcTarget.All, hit.point);
 	}
 
-    //줌인 함수
-    void ZoomIn()
+	[PunRPC]
+	void RPC_PlayGunShot(Vector3 pos)
+	{
+        //GunAudio라는 프리팹을 Resources 폴더에서 가져오고
+		GameObject prefab = Resources.Load<GameObject>("GunAudio");
+        //해당 오브젝트를 pos 위치에 생성한다.
+		GameObject go = Instantiate(prefab, pos, Quaternion.identity); //인스턴스 생성 후 변수 저장
+
+        //해당 오디오 소스를 재생하고
+		AudioSource audio = go.GetComponent<AudioSource>();
+		audio.Play();
+
+        //클립 길이만틈 재생 후 파괴한다.
+		Destroy(go, audio.clip.length); // 복제본 제거는 정상
+	}
+
+
+	//줌인 함수
+	void ZoomIn()
     {
         //zoom flag를 true로 변경
         CameraCollision.instance.zoom = true;

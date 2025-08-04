@@ -18,7 +18,7 @@ public class GameResultManager : MonoBehaviourPun
 	//각 노트북에 들어가는 스크립트들의 리스트
 	public List<SwitchLabtop> Labtops = new List<SwitchLabtop>();
 	//게임 종료 후 대기 시간
-	private float WaitSecond = 5f;
+	private float WaitSecond = 6.7f;
 
 	//MasterClient만 실행하는 함수
 	//모든 노트북이 꺼졌는지 확인한다.

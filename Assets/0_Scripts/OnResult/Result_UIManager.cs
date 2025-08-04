@@ -1,10 +1,12 @@
-using UnityEngine;
-using UnityEngine.UI;
 using Photon.Pun;
 using System.Collections;
+using System.Threading;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 
-public class Result_UIManager : MonoBehaviourPun
+public class Result_UIManager : MonoBehaviourPunCallbacks
 {
     //게임 우승자를 표시해주는 UI
     public GameObject WinnerUI;
@@ -13,10 +15,19 @@ public class Result_UIManager : MonoBehaviourPun
     //일반 Client에게 표시되는 안내 텍스트
     public GameObject WaitingMasterClientText;
 
-    
+
+	//Setting에 사용될 UI
+	public Button GearBtn;
+	public GameObject SettingsFrame;
+	public Slider BGMSlider;
+	public Slider SFXSlider;
+	public Toggle MUTE;
+	public Button BackReadyRoom;
+
 	private void Start()
 	{
-        //마우스 커서 락을 해제시키고
+		SettingsFrame.transform.localScale = Vector3.zero;
+		//마우스 커서 락을 해제시키고
 		Cursor.lockState = CursorLockMode.None;
 		Cursor.visible = true;
 
@@ -96,5 +107,77 @@ public class Result_UIManager : MonoBehaviourPun
             {"StartTime", null }
         };
         PhotonNetwork.CurrentRoom.SetCustomProperties(resetProps);
+	}
+
+
+	//설정창 열기 버튼이 눌리면 실행될 함수
+	public void OnClickedSettingsBtn()
+	{
+		//각 볼륨 크기를 받아와서 슬라이더 value에 적용시켜준다.
+		BGMSlider.value = AudioManager.instance.GetVolume(AudioMixerType.BGM);
+		SFXSlider.value = AudioManager.instance.GetVolume(AudioMixerType.SFX);
+		//현재 Mute 여부에 따라서 Trigger 여부를 설정한다.
+		if (AudioManager.instance.IsMute) MUTE.isOn = true;
+		else MUTE.isOn = false;
+
+		//설정창을 띄운다.(크기를 1로 설정한다.)
+		SettingsFrame.transform.localScale = Vector3.one;
+		//설정차이 띄워지면 뒷 배경의 버튼 클릭을 막는다.
+		GearBtn.interactable = false;
+		//StartBtn이 활성화된 경우에만 비활성화시킨다.
+		if (BackReadyRoom.gameObject.activeSelf)
+			BackReadyRoom.interactable = false;
+	}
+
+	//설정창 나가기 버튼이 눌리면 실행될 함수
+	public void OnExitSettings()
+	{
+		//다시 설정창을 없애고
+		SettingsFrame.transform.localScale = Vector3.zero;
+		//버튼들을 활성화시킨다.
+		GearBtn.interactable = true;
+		if (BackReadyRoom.gameObject.activeSelf)
+			BackReadyRoom.interactable = true;
+	}
+
+	//BGM 슬라이더에 연결될 함수
+	public void OnBGMSliderChanged()
+	{
+		AudioManager.instance.SetAudioVolume(AudioMixerType.BGM, BGMSlider.value);
+	}
+
+	//SFX 슬라이더에 연결될 함수
+	public void OnSFXSliderChanged()
+	{
+		AudioManager.instance.SetAudioVolume(AudioMixerType.SFX, SFXSlider.value);
+	}
+
+	//Mute Toggle에 연결될 함수
+	public void MuteToggle()
+	{
+		if (MUTE.isOn)
+		{
+			AudioManager.instance.SetAudioVolume(AudioMixerType.Master, -80f);
+			AudioManager.instance.IsMute = true;
+		}
+		else
+		{
+			AudioManager.instance.SetAudioVolume(AudioMixerType.Master, 0f);
+			AudioManager.instance.IsMute = false;
+		}
+	}
+
+	//로비로 돌아가기 버튼에 적용될 함수
+	public void BackToLobby()
+	{
+		PhotonNetwork.LeaveRoom();
+	}
+
+	//플레이어가 방을 떠날 때 실행될 함수
+	public override void OnLeftRoom()
+	{
+		initPlayerProperties();
+		//로비 씬으로 가도록 설정
+		SceneManager.LoadScene("LobbyScene");
 	}
 }
