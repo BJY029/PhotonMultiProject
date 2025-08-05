@@ -86,6 +86,7 @@ public class CapturePointManager : MonoBehaviourPun
 					}
 					else if (role == "Seeker") //Seeker이면
 					{
+					
 						//표시할 텍스트
 						string str = "Once all the generators are destroyed, you are fired. Kill all the Runners.";
 						//해당 텍스트 색상 값은 Vector2 2개로 표현한다.
@@ -93,6 +94,9 @@ public class CapturePointManager : MonoBehaviourPun
 						Vector2 colorVec2 = new Vector2(0f, 1f); // b=0, a=1
 						//RPC를 통해 띄울 UI 값을 각 플레이어에게 전달한다.
 						Game_UIManager.instance.photonView.RPC("AlertAllPointCapturedF", player, str, colorVec1, colorVec2);
+
+						//runner의 madmod 활성화
+						SeekerManager.Instance.photonView.RPC("ActiveMadMod", player);
 					}
 				}
 			}

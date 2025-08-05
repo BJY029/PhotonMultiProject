@@ -298,6 +298,12 @@ namespace StarterAssets
             CurrentStamina = StaminaMaxValue;
         }
 
+        public void ChangeStaminaToMadMod()
+        {
+            staminaDecreaseRate -= 3.5f;
+            staminaRecoverRate += 4f;
+        }
+
         public float getSensitivity()
         {
             return Sensitivity;

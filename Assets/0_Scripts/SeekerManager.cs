@@ -1,6 +1,7 @@
 using Photon.Pun;
 using UnityEngine;
 using System.Collections;
+using StarterAssets;
 
 public class SeekerManager : MonoBehaviourPun
 {
@@ -80,6 +81,15 @@ public class SeekerManager : MonoBehaviourPun
 		Game_UIManager.instance.Hearts.value = CurrentHeart;
 	}
 
+	[PunRPC]
+	public void ActiveMadMod()
+	{
+		SeekerGun sg = gameObject.GetComponent<SeekerGun>();
+		sg.chargeDelay /= 2;
+
+		ThirdPersonController tpc = gameObject.GetComponent<ThirdPersonController>();
+		tpc.ChangeStaminaToMadMod();
+	}
 	IEnumerator DestroyAfterDelay(float delay)
 	{
 		yield return new WaitForSeconds(delay);
