@@ -12,7 +12,8 @@ public class SwitchLabtop : MonoBehaviourPun
 	//노트북 꺼짐 여부를 체크하는 플래그
 	public bool checkFlag;
 
-	public Animator Alert;
+	public GameObject Alert;
+
 
 	public void Start()
 	{
@@ -34,7 +35,8 @@ public class SwitchLabtop : MonoBehaviourPun
 		m_MeshRenderer.material = turnoffMat;
 		//Boxcollider를 꺼서 상호작용이 불가하도록 한다.
 		m_BoxCollider.enabled = false;
-		Alert.SetBool("stop", true);
+		Alert.GetComponent<Animator>().SetBool("stop", true);
+		Alert.GetComponent<AudioSource>().Stop();
 		//MasterClient만 해당 노트북이 꺼진것을 체크한다.
 		if(PhotonNetwork.IsMasterClient)
 		{

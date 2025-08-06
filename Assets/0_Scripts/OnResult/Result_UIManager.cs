@@ -170,13 +170,13 @@ public class Result_UIManager : MonoBehaviourPunCallbacks
 	//로비로 돌아가기 버튼에 적용될 함수
 	public void BackToLobby()
 	{
+		initPlayerProperties();
 		PhotonNetwork.LeaveRoom();
 	}
 
 	//플레이어가 방을 떠날 때 실행될 함수
 	public override void OnLeftRoom()
 	{
-		initPlayerProperties();
 		//로비 씬으로 가도록 설정
 		SceneManager.LoadScene("LobbyScene");
 	}

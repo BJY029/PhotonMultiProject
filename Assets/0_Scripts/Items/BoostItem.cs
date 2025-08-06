@@ -22,6 +22,7 @@ public class BoostItem : MonoBehaviourPun
 	[SerializeField]
 	private float BoostTime = 7f;
 
+
 	//접촉한 플레이어
 	private GameObject playerObj;
 	private void Start()
@@ -48,9 +49,11 @@ public class BoostItem : MonoBehaviourPun
 		//Runner 혹은 Seeker가 접촉한ㄱ ㅕㅇ우
 		GameObject playerObj = other.gameObject;
 		if (!playerObj.CompareTag("Runner") && !playerObj.CompareTag("Seeker")) return;
+
 		//해당 부스터를 적용하기 위한 코루틴을 실행시키는 함수를 RPC로 호출한다.
 		playerObj.GetComponent<PhotonView>()?.RPC("RPC_ApplyBoost", playerObj.GetComponent<PhotonView>().Owner, BoostTime);
 		//해당 아이템을 처리하기 위해 RPC 호출
+		ItemManager.Instance.PlayItemAudio(playerObj.transform.position);
 		ItemManager.Instance.photonView.RPC("RPC_PickUpItem", RpcTarget.MasterClient, playerObj.transform.position);
 	}
 }

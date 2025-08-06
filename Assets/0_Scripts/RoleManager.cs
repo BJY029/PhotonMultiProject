@@ -33,6 +33,8 @@ public class RoleManager : MonoBehaviourPun
     public GameObject SeekerIconPrefab;
     private GameObject icon;
 
+    public bool spawning = false;
+
     //플레이어의 역할을 저장하는 객체
     private PlayerRoles myRole;
     //프리팹 생성으로 생성되는 플레이어 객체
@@ -50,6 +52,7 @@ public class RoleManager : MonoBehaviourPun
         switch (myRole)
         {
             case PlayerRoles.Seeker:
+                spawning = true;
                 //Seeker인 경우, Seeker 캐릭터를 먼저 스폰한 후
                 SpawnSeeker();
                 //생성된 플레이어를 맵 카메라가 따라갈 수 있게 설정
@@ -106,6 +109,7 @@ public class RoleManager : MonoBehaviourPun
         Game_UIManager.instance.GunChargeUI.SetActive(true);
         //타이머 재생
         TimeManager.instance.photonView.RPC("SetTimer", RpcTarget.MasterClient);
+        spawning = false;
 	}
 
 

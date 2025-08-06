@@ -58,6 +58,7 @@ public class SeekerGun : MonoBehaviourPun
 	private void Update()
 	{
         if (!photonView.IsMine) return;
+        if (RoleManager.instance.spawning) return;
 
         //만약 충전이 아직 안된경우
 		if (chargeTimer < chargeDelay)

@@ -58,7 +58,8 @@ public class HealItem : MonoBehaviour
 			//해당 Seeker에게 힐 할 수 있는 함수를 RPC로 호출한다.
 			view.RPC("HealHearts", view.Owner, healingAmount);
 		}
-        //아이템을 없애고 재배치하기 위해 해당 함수를 호출시킨다.
-        ItemManager.Instance.photonView.RPC("RPC_PickUpItem", RpcTarget.MasterClient, playerObj.transform.position);
+		//아이템을 없애고 재배치하기 위해 해당 함수를 호출시킨다.
+		ItemManager.Instance.PlayItemAudio(playerObj.transform.position);
+		ItemManager.Instance.photonView.RPC("RPC_PickUpItem", RpcTarget.MasterClient, playerObj.transform.position);
     }
 }

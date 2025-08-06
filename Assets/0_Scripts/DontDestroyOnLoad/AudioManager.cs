@@ -47,7 +47,7 @@ public class AudioManager : MonoBehaviour
 	[Header("----SFXClips----")]
 	public AudioClip StartGameClip;
 	public AudioClip[] ClockTickingClips;
-	public AudioClip GunShotClip;
+	public AudioClip[] PickItemClips;
 	public AudioClip HoverClip;
 
 	public bool IsMute = false;
@@ -150,10 +150,11 @@ public class AudioManager : MonoBehaviour
 		audioSource.PlayOneShot(ClockTickingClips[idx]);
 	}
 
-	public void PlayGunShot()
+	public AudioClip getRandomItemClip()
 	{
-		AudioSource audioSource = GetAvailableAudioSource();
-		audioSource.PlayOneShot(GunShotClip);
+		int idx = UnityEngine.Random.Range(0, PickItemClips.Length);
+
+		return PickItemClips[idx];
 	}
 
 	public void PlayHoverClip()

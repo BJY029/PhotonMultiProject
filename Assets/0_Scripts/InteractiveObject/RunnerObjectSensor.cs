@@ -7,7 +7,7 @@ public class RunnerObjectSensor : MonoBehaviourPun
 
 	//발사할 Ray 거리
 	[SerializeField]
-	private float RayDistance = 10f;
+	private float RayDistance = 1.5f;
 	//Runner 플레이어 카메라
 	public Camera cam;
 	//감지할 레이어

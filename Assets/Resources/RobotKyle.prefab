@@ -1593,7 +1593,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19578acfdca3c2647acfd7ccc3cf8ec3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RayDistance: 5
+  RayDistance: 3.6
   cam: {fileID: 2419360534133847954}
   interactableLayer:
     serializedVersion: 2

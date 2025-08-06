@@ -68,6 +68,18 @@ public class ItemManager : MonoBehaviourPun
 		}
 	}
 
+	public void PlayItemAudio(Vector3 pos)
+	{
+		GameObject prefab = Resources.Load<GameObject>("ItemAudio");
+		GameObject go = Instantiate(prefab, pos, Quaternion.identity);
+
+		AudioSource audioSource = go.GetComponent<AudioSource>();
+		audioSource.clip = AudioManager.instance.getRandomItemClip();
+		audioSource.Play();
+
+		Destroy(go, audioSource.clip.length);
+	}
+
 	//현재 위치 기반으로 가장 가까운 스폰 위치를 찾아서 반환해 주는 함수
 	Transform FindClosestSpawnPoint(Vector3 position)
 	{
