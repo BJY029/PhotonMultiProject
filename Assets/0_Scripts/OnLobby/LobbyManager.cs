@@ -104,7 +104,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 		else //일치 하지 않는 경우
 		{
 			//경고문을 띄워준다.
-			PopUpAnimController.Instance.PopUpWarning(Warning_Password, "비밀번호 불일치!");
+			PopUpAnimController.Instance.PopUpWarning(Warning_Password, "Password mismatch");
 		}
 	}
 

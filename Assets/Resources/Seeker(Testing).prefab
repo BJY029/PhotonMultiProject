@@ -969,7 +969,7 @@ MonoBehaviour:
   seekerCam: {fileID: 8159774006007084611}
   range: 100
   damageToRunnner: 40
-  damageToSeekerOnDummyHit: 10
+  damageToSeekerOnDummyHit: 20
   chargeDelay: 2
   firePoint: {fileID: 4848075004480174894}
   localMuzzleKey: LocalMuzzle

@@ -209,7 +209,7 @@ public class LobbyUIManager : MonoBehaviour
 		if(field.text.IsNullOrEmpty())
 		{
 			//경고문을 띄운다.
-			PopUpAnimController.Instance.PopUpWarning(Warning_NullPass, "비밀번호를 입력하세요!");
+			PopUpAnimController.Instance.PopUpWarning(Warning_NullPass, "Enter password!");
 			return;
 		}
 
@@ -234,10 +234,19 @@ public class LobbyUIManager : MonoBehaviour
 		//모든 요소가 입력되지 않은 상태라면, Warning 메시지를 생성한다.
 		if (RoomName.text.IsNullOrEmpty() || Password.text.IsNullOrEmpty())
 		{
-			PopUpAnimController.Instance.PopUpWarning(Warning_Create, "모든 요소를 입력하세요!");
+			PopUpAnimController.Instance.PopUpWarning(Warning_Create, "Enter all required fields.");
 			return;
 		}
 
 		LobbyManager.CreateRoomWithPassword(RoomName.text, Password.text.Trim());
+	}
+
+	public void ExitGame()
+	{
+#if UNITY_EDITOR
+		UnityEditor.EditorApplication.isPlaying = false;  // 에디터에서 종료
+#else
+        Application.Quit();  // 빌드된 게임에서 종료
+#endif
 	}
 }

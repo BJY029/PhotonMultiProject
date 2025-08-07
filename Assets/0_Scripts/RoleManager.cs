@@ -109,6 +109,7 @@ public class RoleManager : MonoBehaviourPun
         Game_UIManager.instance.GunChargeUI.SetActive(true);
         //타이머 재생
         TimeManager.instance.photonView.RPC("SetTimer", RpcTarget.MasterClient);
+        Game_UIManager.instance.photonView.RPC("BlinkSeekerText", RpcTarget.Others);
         spawning = false;
 	}
 

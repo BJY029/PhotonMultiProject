@@ -8,6 +8,13 @@ using UnityEngine.UI;
 
 public class Room_ButtonController : MonoBehaviour
 {
+    public GameObject WarningMessage;
+
+	public void Start()
+	{
+		WarningMessage.transform.localScale = Vector3.one;
+        WarningMessage.SetActive(false);    
+	}
 	//Ready 버튼이 눌리면 호출되는 함수
 	public void ToogleReady()
     {
@@ -33,6 +40,14 @@ public class Room_ButtonController : MonoBehaviour
     {
         //MasterClient만 역할을 부여한다.
         if (!PhotonNetwork.IsMasterClient) return;
+
+        if(PhotonNetwork.PlayerList.Length < 2)
+        {
+            WarningMessage.SetActive(true);
+            Animator anim =  WarningMessage.GetComponent<Animator>();
+            anim.Play("PopUpAnim");
+            return;
+        }
 
         PhotonNetwork.CurrentRoom.IsOpen = false;
         PhotonNetwork.CurrentRoom.IsVisible = false;

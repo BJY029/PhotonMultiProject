@@ -47,6 +47,8 @@ public class Game_UIManager : MonoBehaviourPun
     public Text Role;
 	public Text Desc;
 	public Text Timer;
+	public GameObject SeekerHuntingStartText;
+	[SerializeField] private float blinkWaitTime;
 
 	public Slider Hearts;
 	public Slider Stamina;
@@ -92,6 +94,7 @@ public class Game_UIManager : MonoBehaviourPun
 		Panel.transform.localScale = Vector3.one;
 		CapturedAlertUI.transform.localScale = Vector3.one;
 		CapturedAlertUI.SetActive(false);
+		SeekerHuntingStartText.SetActive(false);
 
 		//Boost UI를 초기화
 		isVisible = false;
@@ -170,6 +173,26 @@ public class Game_UIManager : MonoBehaviourPun
 		BoostUI.enabled = false;
 	}
 
+	[PunRPC]
+	public void BlinkSeekerText()
+	{
+		StartCoroutine(BlinkSeekerTextC());
+	}
+
+	IEnumerator BlinkSeekerTextC()
+	{
+		int blinkCnt = 0;
+		while(blinkCnt < 3)
+		{
+			SeekerHuntingStartText.SetActive(true);
+			yield return new WaitForSeconds(blinkWaitTime);
+			SeekerHuntingStartText.SetActive(false);
+			yield return new WaitForSeconds(blinkWaitTime);
+			blinkCnt++;
+		}
+		SeekerHuntingStartText.SetActive(false);
+	}
+
 	[PunRPC]//RPC로 호출하기 위해 선언된 함수
 	public void AlertAllPointCapturedF(string str, Vector2 colorVec1, Vector2 colorVec2)
 	{
@@ -239,7 +262,7 @@ public class Game_UIManager : MonoBehaviourPun
 		yield return new WaitUntil(() => !isTyping);
 		//해당 역할에 대한 간단한 설명을 해주는 문자열을 타이핑하도록 함수 호출
 		//해당 함수는 오버로드로 구현 됨
-		StartCoroutine(TypeSentence("Take all the strongholds and escape without the seeker's knowledge!"));
+		StartCoroutine(TypeSentence("Capture all 3 bases without getting caught by the Seeker!"));
 
 		//모두 작성이 끝나면
 		yield return new WaitUntil(() => !isTyping);
@@ -268,7 +291,7 @@ public class Game_UIManager : MonoBehaviourPun
 		//위 타이핑이 끝날 때까지 대기 한다.
 		yield return new WaitUntil(() => !isTyping);
 		//Seeker 역할에 대한 간단한 설명을 타이핑을 통해 보여주고
-		StartCoroutine(TypeSentence("Catch all the runners pretending to be bots and keep them away from the base!"));
+		StartCoroutine(TypeSentence("Eliminate all Runners pretending to be bots and defend the bases!"));
 		//타이핑 작성이 끝나면
 		yield return new WaitUntil(() => !isTyping);
 

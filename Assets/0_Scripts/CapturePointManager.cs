@@ -77,7 +77,7 @@ public class CapturePointManager : MonoBehaviourPun
 					if (role == "Runner") //Runner이면
 					{
 						//표시할 텍스트, Runner의 경우 키패드 번호도 표시해준다.
-						string str = "Destroy the generator and kill the Seeker. \nKeyCode : " + KeyPadManager.Instance.getKeyCodeValue();
+						string str = "Shut down the laptops in the locked zones(G sites) to stop the Seeker! \nKeyCode : " + KeyPadManager.Instance.getKeyCodeValue();
 						//해당 텍스트 색상 값을 Vector2 2개로 표현한다.
 						Vector2 colorVec1 = new Vector2(0f, 1f); // r=0, g=1
 						Vector2 colorVec2 = new Vector2(0f, 1f); // b=0, a=1
@@ -88,7 +88,7 @@ public class CapturePointManager : MonoBehaviourPun
 					{
 					
 						//표시할 텍스트
-						string str = "Once all the generators are destroyed, you are fired. Kill all the Runners.";
+						string str = "Final warning: If every laptop goes dark, you're done. Hunt them now!";
 						//해당 텍스트 색상 값은 Vector2 2개로 표현한다.
 						Vector2 colorVec1 = new Vector2(1f, 0f); // r=1, g=0
 						Vector2 colorVec2 = new Vector2(0f, 1f); // b=0, a=1

@@ -1323,7 +1323,7 @@ MonoBehaviour:
   SprintSpeed: 8
   BoostSpeed: 10
   isBoost: 0
-  StaminaMaxValue: 10000
+  StaminaMaxValue: 100
   minRunStamina: 5
   staminaDecreaseRate: 15
   staminaRecoverRate: 20
