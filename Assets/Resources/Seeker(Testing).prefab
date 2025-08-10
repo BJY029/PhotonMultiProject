@@ -845,9 +845,9 @@ MonoBehaviour:
   isBoost: 0
   StaminaMaxValue: 100
   minRunStamina: 5
-  staminaDecreaseRate: 15
-  staminaRecoverRate: 20
-  staminaRecoverDelay: 2
+  staminaDecreaseRate: 10
+  staminaRecoverRate: 30
+  staminaRecoverDelay: 1
   recoverTimer: 0
   RotationSmoothTime: 0.12
   SpeedChangeRate: 10
@@ -875,8 +875,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   CameraRoot: {fileID: 5159381706927085177}
-  TopClamp: 30
-  BottomClamp: -40
+  TopClamp: 89
+  BottomClamp: -15
   Sensitivity: 1
   CameraAngleOverride: 0
   LockCameraPosition: 0
@@ -987,6 +987,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99b87596e1d16b34ba17fcc2b8637594, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SpecialSkillDelay: 150
+  SkillTimer: 5
   HeartsMaxValue: 100
 --- !u!114 &4499862490092105296
 MonoBehaviour:

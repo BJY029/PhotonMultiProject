@@ -2,11 +2,21 @@ using Photon.Pun;
 using UnityEngine;
 using System.Collections;
 using StarterAssets;
+using System;
 
 public class SeekerManager : MonoBehaviourPun
 {
+	//Seeker 스킬 사용시 실행될 이벤트들
+	public static event Action<bool> OnRevealChange;
 	//싱글턴
 	public static SeekerManager Instance;
+
+	//Seeker 스킬 관련 정보들
+	[SerializeField] private float SpecialSkillDelay = 150f;
+	[SerializeField] private float SkillTimer = 5f;
+	private float chargeTimer;
+	private bool SkillCharged;
+
 
 	private void Awake()
 	{
@@ -47,7 +57,55 @@ public class SeekerManager : MonoBehaviourPun
 		Game_UIManager.instance.Hearts.maxValue = HeartsMaxValue;
 		Game_UIManager.instance.Hearts.value = HeartsMaxValue;
 
+		chargeTimer = SpecialSkillDelay + 1f;
+		SkillCharged = false;
+
 		CurrentHeart = HeartsMaxValue;
+	}
+
+	private void Update()
+	{
+		//자기 자신만 실행
+		if (!photonView.IsMine) return;
+		//아직 쿨타임이 안돌았으면
+		if(chargeTimer < SpecialSkillDelay)
+		{
+			chargeTimer += Time.deltaTime;
+			//쿨타임에 맞춰서 blur 크기 조정
+			Game_UIManager.instance.blurSkill.transform.localScale = 
+				new Vector3(1.0f, (SpecialSkillDelay - chargeTimer) / SpecialSkillDelay, 1.0f);
+		}
+		else
+		{
+			//쿨타임이 다 돌았는데, UI가 안바뀐 경우
+			if (!SkillCharged)
+			{
+				//UI 업데이트
+				Game_UIManager.instance.SpecialSkillScopeCharged();
+				SkillCharged = true;
+			}
+		}
+
+		//Q가 눌리고, 스킬이 준비된 경우
+		if (Input.GetKeyDown(KeyCode.Q) && SkillCharged && !RoleManager.instance.spawning)
+			StartCoroutine(ActiveSpecialSkill());
+	}
+
+	IEnumerator ActiveSpecialSkill()
+	{
+		//스킬 관련 정보 초기화
+		chargeTimer = 0f;
+		SkillCharged = false;
+		Game_UIManager.instance.SpecialSkillScopeInit();
+		
+		//관련 UI 띄움
+		Game_UIManager.instance.photonView.RPC("SeekerActiveSkillAlert", RpcTarget.Others);
+		//등록된 이벤트 실행
+		OnRevealChange?.Invoke(true);
+		//대기후
+		yield return new WaitForSeconds(SkillTimer);
+		//이벤트 끄기
+		OnRevealChange?.Invoke(false);
 	}
 
 	//Dummy를 쏠 경우 호출되는 함수

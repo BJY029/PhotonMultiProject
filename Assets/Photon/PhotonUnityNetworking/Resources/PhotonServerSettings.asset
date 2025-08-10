@@ -80,6 +80,9 @@ MonoBehaviour:
   - RPC_PlayGunShot
   - ActiveMadMod
   - BlinkSeekerText
+  - ChangeMaterialToGold
+  - ChangeMaterialToOrign
+  - SeekerActiveSkillAlert
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

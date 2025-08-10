@@ -88,8 +88,11 @@ public class KeyPadManager : MonoBehaviourPun
 	public void ActiveKeyPads()
 	{
 		//Runner이고, 플레이어 오브젝트가 존재하면
-		if(myRole == PlayerRoles.Runner &&  ros != null)
+		if (myRole == PlayerRoles.Runner && ros != null)
+		{
+			Game_UIManager.instance.PwUISetActive(keyCodeValue.ToString());
 			//해당 스크립트를 활성화해서, 상호작용이 가능하게 해준다.
 			ros.enabled = true;
+		}
 	}
 }

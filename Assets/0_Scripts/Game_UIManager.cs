@@ -39,6 +39,14 @@ public class Game_UIManager : MonoBehaviourPun
 	//충전 중일때 표시할 UI
 	public GameObject blur;
 
+	[Header("Special Skill")]
+	public GameObject SpecialSkillUI;
+	public Sprite NonCharedStar;
+	public Sprite ChargedStar;
+	public Sprite NonCharedScope;
+	public Sprite ChargedScope;
+	public GameObject blurSkill;
+
 	[Header("UIs")]
 	//내 역할을 알려주는 pannel을 없애는 애니메이션 재생을 위한 선언
 	public Animator PanelAnim;
@@ -57,6 +65,7 @@ public class Game_UIManager : MonoBehaviourPun
 	public GameObject specText;
 	public GameObject Minimap;
 	public GameObject GameOverUI;
+	public GameObject PwUI;
 
 	//각종 flag들
     public bool isTyping;
@@ -85,16 +94,21 @@ public class Game_UIManager : MonoBehaviourPun
 
 	private void Start()
 	{
+		Cursor.lockState = CursorLockMode.Locked;
+		Cursor.visible = false;
+
 		AudioManager.instance.InitBGMSoruce();
 		//Seeker 전용 UI는 기본적으로 set false
 		//해당 UI는 RoleManager에서 Seeker 코루틴이 끝난 후 true로 설정된다.
 		CrossHair.SetActive(false);
 		GunChargeUI.SetActive(false);
+		SpecialSkillUI.SetActive(false);
 
 		Panel.transform.localScale = Vector3.one;
 		CapturedAlertUI.transform.localScale = Vector3.one;
 		CapturedAlertUI.SetActive(false);
 		SeekerHuntingStartText.SetActive(false);
+		PwUI.SetActive(false);
 
 		//Boost UI를 초기화
 		isVisible = false;
@@ -129,6 +143,35 @@ public class Game_UIManager : MonoBehaviourPun
 	{
 		Image img = GunChargeUI.GetComponent<Image>();
 		img.sprite = Charged;
+		blur.transform.localScale = new Vector3(1f, 0f, 1f);
+	}
+
+	public void SpecialSkillStarInit()
+	{
+		Image img = SpecialSkillUI.GetComponent<Image>();
+		img.sprite = NonCharedStar;
+		blurSkill.transform.localScale = Vector3.one;
+	}
+
+	public void SpecialSkillStarCharged()
+	{
+		Image img = SpecialSkillUI.GetComponent<Image>();
+		img.sprite = ChargedStar;
+		blurSkill.transform.localScale = new Vector3(1f, 0f, 1f);
+	}
+
+	public void SpecialSkillScopeInit()
+	{
+		Image img = SpecialSkillUI.GetComponent<Image>();
+		img.sprite = NonCharedScope;
+		blurSkill.transform.localScale = Vector3.one;
+	}
+
+	public void SpecialSkillScopeCharged()
+	{
+		Image img = SpecialSkillUI.GetComponent<Image>();
+		img.sprite = ChargedScope;
+		blurSkill.transform.localScale = new Vector3(1f, 0f, 1f);
 	}
 
 	public void setStaminaSliderValue(float value)
@@ -179,6 +222,13 @@ public class Game_UIManager : MonoBehaviourPun
 		StartCoroutine(BlinkSeekerTextC());
 	}
 
+	[PunRPC]
+	public void SeekerActiveSkillAlert()
+	{
+		SeekerHuntingStartText.GetComponent<Text>().text = "Seeker has activated a special skill!";
+		StartCoroutine(BlinkSeekerTextC());
+	}
+
 	IEnumerator BlinkSeekerTextC()
 	{
 		int blinkCnt = 0;
@@ -191,6 +241,14 @@ public class Game_UIManager : MonoBehaviourPun
 			blinkCnt++;
 		}
 		SeekerHuntingStartText.SetActive(false);
+	}
+
+
+
+	public void PwUISetActive(string keyCode)
+	{
+		PwUI.transform.Find("PwText").GetComponent<Text>().text = keyCode;
+		PwUI.SetActive(true);
 	}
 
 	[PunRPC]//RPC로 호출하기 위해 선언된 함수

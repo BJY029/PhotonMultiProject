@@ -65,6 +65,7 @@ public class RoleManager : MonoBehaviourPun
 				StartCoroutine(SeekerInit());
 				break;
             case PlayerRoles.Runner:
+                spawning = true;
                 //Runner인 경우, Runner 캐릭터를 스폰한 후
 				SpawnRunner();
 				//생성된 플레이어를 맵 카메라가 따라갈 수 있게 설정
@@ -93,7 +94,13 @@ public class RoleManager : MonoBehaviourPun
         yield return new WaitUntil(() => !Game_UIManager.instance.isIniting);
         //controller를 다시 활성화해서 움직일 수 있도록 한다.
         PC.enabled = true;
+
+		Game_UIManager.instance.SpecialSkillStarCharged();
+        
+		Game_UIManager.instance.SpecialSkillUI.SetActive(true);
+
 		Game_UIManager.instance.CrossHair.SetActive(true);
+        spawning = false;
 	}
 
     //Seeker인 경우 수행되는 코루틴
@@ -106,6 +113,10 @@ public class RoleManager : MonoBehaviourPun
         //Controller를 다시 활성화해서 움직일 수 있도록 한다.
         PC.enabled = true;
         Game_UIManager.instance.CrossHair.SetActive(true);
+
+        Game_UIManager.instance.SpecialSkillScopeCharged();
+		Game_UIManager.instance.SpecialSkillUI.SetActive(true);
+        
         Game_UIManager.instance.GunChargeUI.SetActive(true);
         //타이머 재생
         TimeManager.instance.photonView.RPC("SetTimer", RpcTarget.MasterClient);

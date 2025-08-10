@@ -82,13 +82,13 @@ public class SeekerGun : MonoBehaviourPun
 
 		if (!photonView.IsMine) return;
         //좌클릭이 눌리면 호출되는 함수
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetMouseButtonDown(0))
             Shoot();
         //우클릭이 눌리면 줌인
-        if(Input.GetButtonDown("Fire2"))
+        if(Input.GetMouseButtonDown(1))
             ZoomIn();
         //우클릭이 떼지면 줌아웃
-        if (Input.GetButtonUp("Fire2"))
+        if (Input.GetMouseButtonUp(1))
             ZoomOut();
 	}
 
@@ -150,7 +150,7 @@ public class SeekerGun : MonoBehaviourPun
         Vector3 hitPoint = firePosition + fireDir * range;
 
 		//거점 전용 collider가 Ray에 감지되지 않기 위해서 다음 처리 진행
-		int excludeMask = (1 << LayerMask.NameToLayer("Site")) | (1 << LayerMask.NameToLayer("Item"));
+		int excludeMask = (1 << LayerMask.NameToLayer("Site")) | (1 << LayerMask.NameToLayer("Item") | (1 << LayerMask.NameToLayer("FootStepSensor")));
 		int layerMask = ~excludeMask;
 
 		//seeker 카메라 기준으로, seeker가 바라보는 방향으로 Ray를 발사한다.

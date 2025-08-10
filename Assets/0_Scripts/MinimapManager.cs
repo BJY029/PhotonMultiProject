@@ -1,5 +1,6 @@
 using UnityEngine;
 using Photon.Pun;
+using System.Collections;
 
 public class MinimapManager : MonoBehaviourPun
 {
@@ -10,6 +11,8 @@ public class MinimapManager : MonoBehaviourPun
 
 	//자신의 아이콘
     private GameObject icon;
+	//해당 플레이어 피아 식별
+	private bool isEnemy;
 
 	private void Start()
 	{
@@ -26,6 +29,7 @@ public class MinimapManager : MonoBehaviourPun
 			{
 				//해당 코드를 실행하는 오브젝트의 자식에 팀원 전용 아이콘을 로컬로 생성시킨다.
 				icon = Instantiate(allyIconPrefab, transform);
+				isEnemy = false;
 			}
 			else //속한 팀이 다른 경우
 			{
@@ -33,18 +37,40 @@ public class MinimapManager : MonoBehaviourPun
 				icon = Instantiate(enemyIconPrefab, transform);
 				//비활성화 한다.
 				icon.SetActive(false);
+				isEnemy = true;
 			}
 
 			//생성된 아이콘의 위치 설정
 			icon.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
 			icon.transform.localPosition = new Vector3(0f, 10f, 0f);
+
+			//각 플레이어들은 해당 이벤트를 구독
+			SeekerManager.OnRevealChange += HandleRevealChanged;
 		}	
+	}
+
+	//bool 여부에 따라 관련 이벤트 실행 함수
+	private void HandleRevealChanged(bool show)
+	{
+		//적이 아닌 경우 실행 안함
+		if (!isEnemy || icon == null) return;
+
+		//false인 경우, 비활성화하고 리턴
+		if (!show)
+		{
+			icon.SetActive(false);
+			return;
+		}
+
+		//적 아이콘 활성화
+		icon.SetActive(true);
 	}
 
 	//해당 플레이어가 파괴되면, 아이콘도 삭제한다.
 	private void OnDestroy()
 	{
-		if(icon != null)
+		SeekerManager.OnRevealChange -= HandleRevealChanged;
+		if (icon != null)
 		{
 			Destroy(icon);
 		}
