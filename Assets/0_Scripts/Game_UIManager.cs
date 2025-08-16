@@ -216,12 +216,14 @@ public class Game_UIManager : MonoBehaviourPun
 		BoostUI.enabled = false;
 	}
 
+	//Seeker가 움직이기 시작할 때 표시될 UI 처리 함수
 	[PunRPC]
 	public void BlinkSeekerText()
 	{
 		StartCoroutine(BlinkSeekerTextC());
 	}
 
+	//Seeker 고유 스킬 발동시 표시될 UI 처리 함수
 	[PunRPC]
 	public void SeekerActiveSkillAlert()
 	{
@@ -251,7 +253,8 @@ public class Game_UIManager : MonoBehaviourPun
 		PwUI.SetActive(true);
 	}
 
-	[PunRPC]//RPC로 호출하기 위해 선언된 함수
+	//모든 거점 점령시 표시될 UI 처리 함수
+	[PunRPC]
 	public void AlertAllPointCapturedF(string str, Vector2 colorVec1, Vector2 colorVec2)
 	{
 		//Vector2 값을 합쳐서 색상 값으로 변환 후
