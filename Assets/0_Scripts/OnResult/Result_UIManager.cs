@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Photon.Realtime;
 using System.Collections;
 using System.Threading;
 using UnityEngine;
@@ -53,7 +54,23 @@ public class Result_UIManager : MonoBehaviourPunCallbacks
 		}
 	}
 
-    //우승자를 표시하는 함수
+	//만약 master client가 게임을 나가거나 특정 이유로 변경된 경우
+	public override void OnMasterClientSwitched(Player newMasterClient)
+	{
+		Debug.Log("MasterClient가 변경되었습니다.");
+
+		//새로운 master client 에게 게임 시작 권한을 부여 후
+		if (PhotonNetwork.IsMasterClient)
+		{
+			//관련 버튼을 활성화 하고
+			BackToRoomBtn.SetActive(true);
+			//해당 버튼에 대기 룸으로 돌아갈 때 해야 하는 처리들을 연결시켜준다.
+			BackToRoomBtn.GetComponent<Button>().onClick.AddListener(BackToRoom);
+			WaitingMasterClientText.SetActive(false);
+		}
+	}
+
+	//우승자를 표시하는 함수
 	void GetWinner()
     {
         //다음과 같이 CustomProperties에서 우승자 정보를 받아와서 출력한다.
